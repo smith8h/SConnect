@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         
         String tag = "someTag"; 
         String url = "https://smith8h.t.me"; // follow me there 😐
-        
+        // just for edit
         SConnect connect = new SConnect(this);
         
         connect.setCallBack(new SConnectCallBack() {
