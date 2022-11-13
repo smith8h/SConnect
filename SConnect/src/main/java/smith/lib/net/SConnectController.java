@@ -90,10 +90,9 @@ class SConnectController {
         }
 
         try {
-            if (sconnect.getRequestType() == SConnect.REQUEST_PARAM) {
+            if (sconnect.getConnectType() == SConnect.PARAM) {
                 if (method.equals(SConnect.GET)) {
                     HttpUrl.Builder httpBuilder;
-
                     try {
                         httpBuilder = HttpUrl.parse(url).newBuilder();
                     } catch (NullPointerException ne) {
@@ -102,7 +101,6 @@ class SConnectController {
 
                     if (sconnect.getParams().size() > 0) {
                         HashMap<String, Object> params = sconnect.getParams();
-
                         for (HashMap.Entry<String, Object> param : params.entrySet()) {
                             httpBuilder.addQueryParameter(param.getKey(), String.valueOf(param.getValue()));
                         }
@@ -113,23 +111,23 @@ class SConnectController {
                     FormBody.Builder formBuilder = new FormBody.Builder();
                     if (sconnect.getParams().size() > 0) {
                         HashMap<String, Object> params = sconnect.getParams();
-
                         for (HashMap.Entry<String, Object> param : params.entrySet()) {
                             formBuilder.add(param.getKey(), String.valueOf(param.getValue()));
                         }
                     }
-
                     RequestBody reqBody = formBuilder.build();
-
                     reqBuilder.url(url).headers(headerBuilder.build()).method(method, reqBody);
                 }
             } else {
                 RequestBody reqBody = RequestBody.create(MediaType.parse("application/json"), new Gson().toJson(sconnect.getParams()));
-
                 if (method.equals(SConnect.GET)) {
-                    reqBuilder.url(url).headers(headerBuilder.build()).get();
+                    reqBuilder.url(url)
+                        .headers(headerBuilder.build())
+                        .get();
                 } else {
-                    reqBuilder.url(url).headers(headerBuilder.build()).method(method, reqBody);
+                    reqBuilder.url(url)
+                        .headers(headerBuilder.build())
+                        .method(method, reqBody);
                 }
             }
 

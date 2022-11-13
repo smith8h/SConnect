@@ -16,8 +16,8 @@ public class SConnect {
     public static final String PUT = "PUT";
     public static final String DELETE = "DELETE";
 	
-    public static final int REQUEST_PARAM = 0;
-    public static final int REQUEST_BODY = 1;
+    public static final int PARAM = 0;
+    public static final int BODY = 1;
     
     private HashMap<String, Object> params = new HashMap<>();
 	private HashMap<String, Object> headers = new HashMap<>();
@@ -61,7 +61,7 @@ public class SConnect {
     }
     
     public void connect(String method, String url, String tag) {
-		SConnectController.getInstance().connect(this, method, url, tag, listener);
+		SConnectController.getInstance().connect(this, method, url, tag, callback);
 	}
 
 	public static boolean isDeviceConnected(Context context) {
