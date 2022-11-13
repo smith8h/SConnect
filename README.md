@@ -12,12 +12,12 @@
 <br/>
 
 **Content**
-- [**Setup ðŸ“²**](#setup-)
-- [**Documentations ðŸ“ƒ**](#documentations-)
-- [**Donations :heart:**](#donations-)
+- [**Setup**](#setup)
+- [**Documentations**](#documentations)
+- [**Donations :heart:**](#donations)
 <br/>
 
-# Setup ðŸ“²
+# Setup
 > **Step 1.** Add the JitPack repository to your build file.</br>
 Add it in your root build.gradle at the end of repositories:
 ```gradle
@@ -37,7 +37,7 @@ dependencies {
 
 <br/>
 
-# Documentation ðŸ“ƒ
+# Documentation
 To create a connect first:
 ```java
     SConnect connect = new SConnect(this);
@@ -102,7 +102,7 @@ If you need to add some params to the request:
 
 <br/>
 
-# Donations â¤
+# Donations
 > If you would like to support this project's further development, the creator of this projects or the continuous maintenance of the project **feel free to donate**.
 Your donation is highly appreciated. Thank you!
 <br/>
