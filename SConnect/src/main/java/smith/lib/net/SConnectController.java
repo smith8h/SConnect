@@ -3,28 +3,11 @@ package smith.lib.net;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.security.SecureRandom;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
+import java.security.cert.*;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.FormBody;
-import okhttp3.Headers;
-import okhttp3.HttpUrl;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import smith.lib.net.SConnect;
-import smith.lib.net.SConnectCallBack;
+import javax.net.ssl.*;
+import okhttp3.*;
 
 @SuppressWarnings({"Unused"})
 class SConnectController {
@@ -140,7 +123,7 @@ class SConnectController {
                     sconnect.getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            callback.responseError(tag, e.getMessage());
+                            callback.onFialure(new SResponse(e.getMessage()), tag);
                         }
                     });
                 }
@@ -156,13 +139,13 @@ class SConnectController {
                             for (String s : b.names()) {
                                 map.put(s, b.get(s) != null ? b.get(s) : "null");
                             }
-                            callback.response(tag, responseBody, map);
+                            callback.onSuccess(new SResponse(responseBody), tag, map);
                         }
                     });
                 }
             });
         } catch (Exception e) {
-            callback.responseError(tag, e.getMessage());
+            callback.onFailure(new SResponse(e.getMessage()), tag);
         }
     }
 }

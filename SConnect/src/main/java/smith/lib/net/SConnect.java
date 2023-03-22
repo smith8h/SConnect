@@ -1,13 +1,10 @@
 package smith.lib.net;
 
 import android.app.Activity;
-import android.net.NetworkCapabilities;
-import android.net.NetworkInfo;
+import android.net.*;
 import android.os.Build;
 import java.util.*;
 import org.json.*;
-import android.net.Network;// NetworkInfo;
-import android.net.ConnectivityManager;
 import android.content.Context;
 
 public class SConnect {
@@ -58,7 +55,7 @@ public class SConnect {
 	}
     
     public Activity getActivity() {
-        return (Activity)context;
+        return (Activity) context;
     }
     
     public void connect(String method, String url, String tag) {
@@ -74,14 +71,5 @@ public class SConnect {
             NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
             return networkInfo != null && networkInfo.isConnected();
         }
-	}
-
-	public static boolean isResponseValidJson(String response) {
-		try { new JSONObject(response); }
-        catch (JSONException ex) {
-			try { new JSONArray(response); }
-            catch (JSONException ex1) { return false; }
-		}
-		return true;
 	}
 }

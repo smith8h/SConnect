@@ -31,7 +31,7 @@ allprojects {
 > **Step 2.** Add the dependency:
 ```gradle
 dependencies {
-    implementation 'com.github.smith8h:SConnect:v1.0'
+    implementation 'com.github.smith8h:SConnect:2.0'
 }
 ```
 
@@ -46,19 +46,20 @@ Then pass the callback interface to deal with the response:
 ```java
     connect.setCallBack(new SConnectCallBack() {
         @Override
-        public void responseError(String tag, String message) {}
+        public void onFailure(SResponse response, String tag) {}
             
         @Override
-        public void response(String tag, String response, HashMap<String, Object> responseHeaders) {
+        public void onSuccess(SResponse response, String tag, HashMap<String, Object> responseHeaders) {
                 
-            if (SConnect.isResponseValidJson(response)) {
-                Toast.makeText(context, response, Toast.LENGTH_SHORT).show();
+            if (response.isJSON() && response.isMap()) {
+                Toast.makeText(context, response.getMap().getString("key"), Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(context, "response is plain text", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, response.toString(), Toast.LENGTH_SHORT).show();
             }
         }
     });
 ```
+
 After that you can make a connect to get the response needed:
 ```java
     if (SConnect.isDeviceConnected(this)) {
@@ -92,13 +93,86 @@ If you need to add some params to the request:
     connect.setParams(headers, SConnect.PARAM); // or SConnect.BODY
 ```
 
-<br/>
-
-**Getters methods** 
+**Getters methods of SConnect class** 
 - `getHeaders()` returns the headers passed as (HashMap<String, Object>) Object
 - `getParams()` returns the params passed as (HashMap<String, Object>) Object
-- `getActivity()` returns the current Activity
 - `getConnectType()` returns 0/1 as passed to the params type (PARAM, BODY values)
+
+<br/>
+
+Dealing with response using `SResponse` class
+```java
+    // get/check response as json (if get a api json response)
+    boolean isJSON = response.isJSON();
+    // check if response json is Object
+    boolean isMap = response.isMap();
+    // else if it's Array
+    boolean isArray = response.isArray();
+    
+    
+    // getting response if it is plain text or json in general
+    String text = response.toString();
+    
+    // get response as object
+    SResponse.Map object = response.getMap();
+    // now you can access all values in that object using
+    // return Object
+    Object o = object.get("key");
+    // return int
+    int i = object.getInt("key");
+    // return String
+    String s = object.getString("key");
+    // return float
+    float f = object.getFloat("key");
+    // return boolean
+    boolean b = object.getBoolean("key");
+    // return Map object as above ↑
+    // if map object nested inside another map object
+    SResponse.Map = object.getMap("key");
+    // get keys
+    Set<String> keys = object.keys();
+    // get values
+    List<Object> values = object.values();
+    // has key?
+    boolean hasKey = object.hasKey("key");
+    // has value? (accepts anything)
+    boolean hasKey = object.hasValue(Object);
+    // size
+    int size = object.size();
+    // is empty?
+    boolean isEmpty = object.isEmpty();
+    // to json string
+    String json = object.toString();
+    // to HashMap
+    HashMap<String, Object> map = object.toMap();
+    
+    
+    // the same but for arrays
+    // get response as array from response or from map object
+    // this if the response body is array
+    SResponse.Array array = response.getArray();
+    // and this if response body is object ↑ has an array as value inside it
+    SResponse.Array array = object.getArray();
+    // array class has same methods like map class
+    // get at index
+    Object o = array.get(0);
+    // getString(), getInt(), getFloat(), getBoolean()
+    // get Map object like above if map object nested inside list
+    SResponse.Map m = array.getMap();
+    // same if it has array inside array
+    SResponse.Array a = array.getArray();
+    // contains something?
+    boolean contains = array.contains(Object);
+    // size
+    int size = array.size();
+    // is empty
+    boolean isEmpty = array.isEmpty();
+    // to json string
+    String json = array.toString();
+    // to List
+    List<Object> list = array.toList();
+    
+```
 
 <br/>
 
