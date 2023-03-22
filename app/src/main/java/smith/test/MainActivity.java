@@ -11,6 +11,7 @@ import com.itsaky.androidide.logsender.LogSender;
 import java.util.HashMap;
 import smith.lib.net.SConnect;
 import smith.lib.net.SConnectCallBack;
+import smith.lib.net.SResponse;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,13 +31,15 @@ public class MainActivity extends AppCompatActivity {
         
         connect.setCallBack(new SConnectCallBack() {
             @Override
-            public void responseError(String tag, String message) {}
-            
-            @Override
-            public void response(String tag, String response, HashMap<String, Object> responseHeaders) {
+            public void onFailure(SResponse response, String tag) {}
                 
-                if (SConnect.isResponseValidJson(response)) {
-                    Toast.makeText(MainActivity.this, response, Toast.LENGTH_SHORT).show();
+            @Override
+            public void onSuccess(SResponse response, String tag, HashMap<String, Object> responseHeaders) {
+                if (response.isJSON() && response.isArray()) {
+                    SResponse.Array a = response.getArray();
+                    SResponse.Map m = a.getMap(0);
+                    m.toMap();
+                    Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(MainActivity.this, "response is not json", Toast.LENGTH_SHORT).show();
                 }

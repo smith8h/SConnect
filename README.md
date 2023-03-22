@@ -136,7 +136,7 @@ Dealing with response using `SResponse` class
     // has key?
     boolean hasKey = object.hasKey("key");
     // has value? (accepts anything)
-    boolean hasKey = object.hasValue(Object);
+    boolean hasValue = object.hasValue(Object);
     // size
     int size = object.size();
     // is empty?
@@ -156,9 +156,16 @@ Dealing with response using `SResponse` class
     // array class has same methods like map class
     // get at index
     Object o = array.get(0);
-    // getString(), getInt(), getFloat(), getBoolean()
+    // get string 
+    String s = array.getString(0);
+    // get int
+    int i = array.getInt(0);
+    // get float
+    float f = array.getFloat(0);
+    // get boolean
+    boolean b = array.getBoolean(0);
     // get Map object like above if map object nested inside list
-    SResponse.Map m = array.getMap();
+    SResponse.Map m = array.getMap(0);
     // same if it has array inside array
     SResponse.Array a = array.getArray();
     // contains something?

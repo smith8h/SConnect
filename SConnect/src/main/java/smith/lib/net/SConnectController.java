@@ -123,7 +123,7 @@ class SConnectController {
                     sconnect.getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            callback.onFialure(new SResponse(e.getMessage()), tag);
+                            callback.onFailure(new SResponse(e.getMessage()), tag);
                         }
                     });
                 }
