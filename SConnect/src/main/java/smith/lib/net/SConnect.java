@@ -1,11 +1,12 @@
 package smith.lib.net;
 
 import android.app.Activity;
-import java.util.HashMap;
-import org.json.JSONException;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
+import android.os.Build;
+import java.util.*;
+import org.json.*;
+import android.net.Network;// NetworkInfo;
 import android.net.ConnectivityManager;
 import android.content.Context;
 
@@ -65,10 +66,14 @@ public class SConnect {
 	}
 
 	public static boolean isDeviceConnected(Context context) {
-		ConnectivityManager connectivityManager = (ConnectivityManager) context
-				.getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-		return networkInfo != null && networkInfo.isConnected();
+		ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
+            return capabilities != null && (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI));
+        } else {
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+            return networkInfo != null && networkInfo.isConnected();
+        }
 	}
 
 	public static boolean isResponseValidJson(String response) {

@@ -26,6 +26,7 @@ import okhttp3.Response;
 import smith.lib.net.SConnect;
 import smith.lib.net.SConnectCallBack;
 
+@SuppressWarnings({"Unused"})
 class SConnectController {
     
     private static final int SOCKET_TIMEOUT = 15000;
@@ -119,7 +120,7 @@ class SConnectController {
                     reqBuilder.url(url).headers(headerBuilder.build()).method(method, reqBody);
                 }
             } else {
-                RequestBody reqBody = RequestBody.create(MediaType.parse("application/json"), new Gson().toJson(sconnect.getParams()));
+                RequestBody reqBody = RequestBody.create("application/json; charset=utf-8;", MediaType.parse(new Gson().toJson(sconnect.getParams())));
                 if (method.equals(SConnect.GET)) {
                     reqBuilder.url(url)
                         .headers(headerBuilder.build())
