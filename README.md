@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/niltonvasques/simplecov-shields-badge.svg?branch=master)](https://travis-ci.org/niltonvasques/simplecov-shields-badge)
 ![stability-stable](https://img.shields.io/badge/stability-stable-green.svg)
 ![minimumSDK](https://img.shields.io/badge/minSDK-21-f39f37)
-![stable version](https://img.shields.io/badge/stable_version-v1.0-blue)
+![stable version](https://img.shields.io/badge/stable_version-v2.0-blue)
 ![Repository size](https://img.shields.io/github/repo-size/smith8h/SConnect)
 <br/>
 
