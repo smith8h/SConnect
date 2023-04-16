@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
                     put("key", "value");
                     // ...
                 }}, SConnect.PARAM) // BODY
-                .get(url); // get(url, tag);
+                .url(url).get(tag);
                 // get, post, put, delete
     }
 }

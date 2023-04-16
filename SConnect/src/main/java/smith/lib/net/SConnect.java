@@ -13,7 +13,6 @@ public class SConnect {
     private static final String POST = "POST";
     private static final String PUT = "PUT";
     private static final String DELETE = "DELETE";
-	
     private static final String TAG = "DefaultTag";
     
     public static final int PARAM = 0;
@@ -25,6 +24,7 @@ public class SConnect {
     private Context context;
     private SConnectCallBack callback;
 	private int paramsType = 0;
+    private String url;
     
 	public static SConnect with(Context context) {
         SConnect sc = new SConnect();
@@ -48,6 +48,43 @@ public class SConnect {
         return this;
 	}
     
+    public SConnect url(String url) {
+    	this.url = url;
+        return this;
+    }
+    
+    public void get() {
+    	connect(GET, url, TAG);
+    }
+    
+    public void get(String tag) {
+    	connect(GET, url, tag);
+    }
+    
+    public void post() {
+    	connect(POST, url, TAG);
+    }
+    
+    public void post(String tag) {
+    	connect(POST, url, tag);
+    }
+    
+    public void put() {
+    	connect(PUT, url, TAG);
+    }
+    
+    public void put(String tag) {
+    	connect(PUT, url, tag);
+    }
+    
+    public void delete() {
+    	connect(DELETE, url, TAG);
+    }
+    
+    public void delete(String tag) {
+    	connect(DELETE, url, tag);
+    }
+    
     public Map<String, String> getHeaders() {
 		return headers;
 	}
@@ -62,38 +99,6 @@ public class SConnect {
     
     public Activity getActivity() {
         return (Activity) context;
-    }
-    
-    public void get(String url) {
-    	connect(GET, url, TAG);
-    }
-    
-    public void get(String url, String tag) {
-    	connect(GET, url, tag);
-    }
-    
-    public void post(String url) {
-    	connect(POST, url, TAG);
-    }
-    
-    public void post(String url, String tag) {
-    	connect(POST, url, tag);
-    }
-    
-    public void put(String url) {
-    	connect(PUT, url, TAG);
-    }
-    
-    public void put(String url, String tag) {
-    	connect(PUT, url, tag);
-    }
-    
-    public void delete(String url) {
-    	connect(DELETE, url, TAG);
-    }
-    
-    public void delete(String url, String tag) {
-    	connect(DELETE, url, tag);
     }
     
     private void connect(String method, String url, String tag) {
