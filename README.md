@@ -1,9 +1,8 @@
 # SConnect
 
-[![Build Status](https://travis-ci.org/niltonvasques/simplecov-shields-badge.svg?branch=master)](https://travis-ci.org/niltonvasques/simplecov-shields-badge)
 ![stability-stable](https://img.shields.io/badge/stability-stable-green.svg)
 ![minimumSDK](https://img.shields.io/badge/minSDK-21-f39f37)
-![stable version](https://img.shields.io/badge/stable_version-v2.0-blue)
+![stable version](https://img.shields.io/badge/stable_version-v3.0-blue)
 ![Repository size](https://img.shields.io/github/repo-size/smith8h/SConnect)
 <br/>
 
@@ -31,76 +30,74 @@ allprojects {
 > **Step 2.** Add the dependency:
 ```gradle
 dependencies {
-    implementation 'com.github.smith8h:SConnect:v2.0'
+    implementation 'com.github.smith8h:SConnect:v3.0'
 }
 ```
 
 <br/>
 
 # Documentation
-To create a connect first:
+To create a connect first pass a context using `with()` method:
 ```java
-    SConnect connect = new SConnect(this);
+    SConnect.with(this)
 ```
-Then pass the callback interface to deal with the response:
+Then pass the callback interface to deal with the response using `callback()` method:
 ```java
-    connect.setCallBack(new SConnectCallBack() {
+    .callback(new SConnectCallBack() {
         @Override
         public void onFailure(SResponse response, String tag) {}
             
         @Override
         public void onSuccess(SResponse response, String tag, HashMap<String, Object> responseHeaders) {
-                
             if (response.isJSON() && response.isMap()) {
                 Toast.makeText(context, response.getMap().getString("key"), Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(context, response.toString(), Toast.LENGTH_SHORT).show();
             }
         }
-    });
+    })
+```
+After that, if you need to add headers, params to your connection. add them using `headers()` and `params()` methods:
+```java
+    .headers(Map<String, String>)
+    .params(Map<String, String>, SConnect.PARAM)
+    // or SConnect.BODY
+```
+then pass the url using `url()` method:
+```java
+    .url("url")
+```
+finaly, use any of `get()`, `post()`, `put()` or `delete()` methods corrisponding to your connection:
+> you can pass a tag to recognize multiple connections
+```java
+    .get() // post() | put() | delete()
+    // or get(tag) | post(tag) | put(tag) | delete(tag)
 ```
 
-After that you can make a connect to get the response needed:
+**Final codes**:
+• connections doesn't need params/headers:
 ```java
-    if (SConnect.isDeviceConnected(this)) {
-        connect.connect(SConnect.GET, url, "SomeTagToRecognize");
-    }
+    SConnect.with(this)
+            .callback(callback)
+            .url(url)
+            .get(); // post | put | delete
+            // also pass tag if you need to recognize multiple requesrs which one is giving response
 ```
-**Available Request Methods**: `GET`, `POST`, `PUT`, `DELETE`.
+• connections need params/headers:
+```java
+    SConnect.with(this)
+            .callback(callback)
+            .params(params, SConnect.PARAM) // BODY
+            .headers(headers)
+            .url(url)
+            .get(); // post | put | delete
+            // also pass tag if you need to recognize multiple requesrs which one is giving response
+```
 
 <br/>
 
-If you need to add some headers to the request:
-```java
-    // create a hashmap to set the headers
-    HashMap<String, Object> headers = new HashMap<>();
-    headers.put("key", value);
-    ...
-    
-    // pass it to the connect
-    // before calling .connect(...) method.
-    connect.setHeaders(headers);
-```
-If you need to add some params to the request:
-```java
-    // create a hashmap to set the params
-    HashMap<String, Object> headers = new HashMap<>();
-    headers.put("key", value);
-    ...
-    
-    // pass it to the connect
-    // before calling .connect(...) method.
-    connect.setParams(headers, SConnect.PARAM); // or SConnect.BODY
-```
-
-**Getters methods of SConnect class** 
-- `getHeaders()` returns the headers passed as (HashMap<String, Object>) Object
-- `getParams()` returns the params passed as (HashMap<String, Object>) Object
-- `getConnectType()` returns 0/1 as passed to the params type (PARAM, BODY values)
-
-<br/>
-
-Dealing with response using `SResponse` class
+Dealing with **Json response* using `SResponse` class
+> if response is plain/text or HTML (when requesting websites) simply use `response.toString()` method.
 ```java
     // get/check response as json (if get a api json response)
     boolean isJSON = response.isJSON();
