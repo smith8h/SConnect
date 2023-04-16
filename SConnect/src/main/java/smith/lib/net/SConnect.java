@@ -9,66 +9,104 @@ import android.content.Context;
 
 public class SConnect {
     
-	public static final String GET = "GET";
-    public static final String POST = "POST";
-    public static final String PUT = "PUT";
-    public static final String DELETE = "DELETE";
+	private static final String GET = "GET";
+    private static final String POST = "POST";
+    private static final String PUT = "PUT";
+    private static final String DELETE = "DELETE";
 	
+    private static final String TAG = "DefaultTag";
+    
     public static final int PARAM = 0;
     public static final int BODY = 1;
     
-    private HashMap<String, Object> params = new HashMap<>();
-	private HashMap<String, Object> headers = new HashMap<>();
+    private Map<String, String> params = new HashMap<>();
+	private Map<String, String> headers = new HashMap<>();
 	
     private Context context;
     private SConnectCallBack callback;
-	private int connectType = 0;
+	private int paramsType = 0;
     
-    
-	public SConnect(Context context) {
-		this.context = context;
+	public static SConnect with(Context context) {
+        SConnect sc = new SConnect();
+        sc.context = context;
+		return sc;
 	}
     
-    public void setCallBack(SConnectCallBack callback) {
+    public SConnect callback(SConnectCallBack callback) {
         this.callback = callback;
+        return this;
     }
     
-    public void setHeaders(HashMap<String, Object> headers) {
+    public SConnect headers(Map<String, String> headers) {
 		this.headers = headers;
+        return this;
 	}
 	
-	public void setParams(HashMap<String, Object> params, int connectType) {
+	public SConnect params(Map<String, String> params, int type) {
 		this.params = params;
-		this.connectType = connectType;
+		this.paramsType = type;
+        return this;
 	}
     
-    public HashMap<String, Object> getHeaders() {
+    public Map<String, String> getHeaders() {
 		return headers;
 	}
     
-    public HashMap<String, Object> getParams() {
+    public Map<String, String> getParams() {
 		return params;
 	}
 	
-	public int getConnectType() {
-		return connectType;
+	public int getParamsType() {
+		return paramsType;
 	}
     
     public Activity getActivity() {
         return (Activity) context;
     }
     
-    public void connect(String method, String url, String tag) {
+    public void get(String url) {
+    	connect(GET, url, TAG);
+    }
+    
+    public void get(String url, String tag) {
+    	connect(GET, url, tag);
+    }
+    
+    public void post(String url) {
+    	connect(POST, url, TAG);
+    }
+    
+    public void post(String url, String tag) {
+    	connect(POST, url, tag);
+    }
+    
+    public void put(String url) {
+    	connect(PUT, url, TAG);
+    }
+    
+    public void put(String url, String tag) {
+    	connect(PUT, url, tag);
+    }
+    
+    public void delete(String url) {
+    	connect(DELETE, url, TAG);
+    }
+    
+    public void delete(String url, String tag) {
+    	connect(DELETE, url, tag);
+    }
+    
+    private void connect(String method, String url, String tag) {
 		SConnectController.getInstance().connect(this, method, url, tag, callback);
 	}
 
 	public static boolean isDeviceConnected(Context context) {
-		ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		var connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
+            var capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
             return capabilities != null && (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI));
         } else {
-            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+            var networkInfo = connectivityManager.getActiveNetworkInfo();
             return networkInfo != null && networkInfo.isConnected();
         }
 	}

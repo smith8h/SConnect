@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.security.SecureRandom;
 import java.security.cert.*;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import javax.net.ssl.*;
 import okhttp3.*;
@@ -24,27 +25,23 @@ class SConnectController {
 
     private OkHttpClient getClient() {
         if (client == null) {
-            OkHttpClient.Builder builder = new OkHttpClient.Builder();
-
+            var builder = new OkHttpClient.Builder();
             try {
-                final TrustManager[] trustAllCerts = new TrustManager[] {
+                final var trustAllCerts = new TrustManager[] {
                     new X509TrustManager() {
-                        @Override
-                        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {}
+                        @Override public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {}
 
-                        @Override
-                        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {}
+                        @Override public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {}
 
-                        @Override
-                        public X509Certificate[] getAcceptedIssuers() {
+                        @Override public X509Certificate[] getAcceptedIssuers() {
                             return new X509Certificate[] {};
                         }
                     }
                 };
 
-                final SSLContext sslContext = SSLContext.getInstance("TLS");
+                final var sslContext = SSLContext.getInstance("TLS");
                 sslContext.init(null, trustAllCerts, new SecureRandom());
-                final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+                final var sslSocketFactory = sslContext.getSocketFactory();
                 builder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustAllCerts[0]);
                 builder.connectTimeout(SOCKET_TIMEOUT, TimeUnit.MILLISECONDS);
                 builder.readTimeout(READ_TIMEOUT, TimeUnit.MILLISECONDS);
@@ -55,7 +52,7 @@ class SConnectController {
                     }
                 });
             } catch (Exception e) {}
-
+            
             client = builder.build();
         }
 
@@ -63,48 +60,39 @@ class SConnectController {
     }
 
     public void connect(final SConnect sconnect, String method, String url, final String tag, final SConnectCallBack callback) {
-        Request.Builder reqBuilder = new Request.Builder();
-        Headers.Builder headerBuilder = new Headers.Builder();
+        var reqBuilder = new Request.Builder();
+        var headerBuilder = new Headers.Builder();
 
         if (sconnect.getHeaders().size() > 0) {
-            HashMap<String, Object> headers = sconnect.getHeaders();
-            for (HashMap.Entry<String, Object> header : headers.entrySet()) {
-                headerBuilder.add(header.getKey(), String.valueOf(header.getValue()));
-            }
+            sconnect.getHeaders().forEach((key, value) -> headerBuilder.add(key, value));
         }
 
         try {
-            if (sconnect.getConnectType() == SConnect.PARAM) {
-                if (method.equals(SConnect.GET)) {
+            if (sconnect.getParamsType() == SConnect.PARAM) {
+                if (method.equals("GET")) {
                     HttpUrl.Builder httpBuilder;
                     try {
                         httpBuilder = HttpUrl.parse(url).newBuilder();
                     } catch (NullPointerException ne) {
-                        throw new NullPointerException("unexpected url: " + url);
+                        throw new NullPointerException("Unexpected url: " + url);
                     }
 
                     if (sconnect.getParams().size() > 0) {
-                        HashMap<String, Object> params = sconnect.getParams();
-                        for (HashMap.Entry<String, Object> param : params.entrySet()) {
-                            httpBuilder.addQueryParameter(param.getKey(), String.valueOf(param.getValue()));
-                        }
+                        sconnect.getParams().forEach((key, value) -> httpBuilder.addQueryParameter(key, value));
                     }
 
                     reqBuilder.url(httpBuilder.build()).headers(headerBuilder.build()).get();
                 } else {
-                    FormBody.Builder formBuilder = new FormBody.Builder();
+                    var formBuilder = new FormBody.Builder();
                     if (sconnect.getParams().size() > 0) {
-                        HashMap<String, Object> params = sconnect.getParams();
-                        for (HashMap.Entry<String, Object> param : params.entrySet()) {
-                            formBuilder.add(param.getKey(), String.valueOf(param.getValue()));
-                        }
+                        sconnect.getParams().forEach((key, value) -> formBuilder.add(key, value));
                     }
-                    RequestBody reqBody = formBuilder.build();
+                    var reqBody = formBuilder.build();
                     reqBuilder.url(url).headers(headerBuilder.build()).method(method, reqBody);
                 }
             } else {
-                RequestBody reqBody = RequestBody.create("application/json; charset=utf-8;", MediaType.parse(new Gson().toJson(sconnect.getParams())));
-                if (method.equals(SConnect.GET)) {
+                var reqBody = RequestBody.create("application/json; charset=utf-8;", MediaType.parse(new Gson().toJson(sconnect.getParams())));
+                if (method.equals("GET")) {
                     reqBuilder.url(url)
                         .headers(headerBuilder.build())
                         .get();
@@ -115,14 +103,13 @@ class SConnectController {
                 }
             }
 
-            Request req = reqBuilder.build();
+            var req = reqBuilder.build();
 
             getClient().newCall(req).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, final IOException e) {
                     sconnect.getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
+                        @Override public void run() {
                             callback.onFailure(new SResponse(e.getMessage()), tag);
                         }
                     });
@@ -130,14 +117,13 @@ class SConnectController {
 
                 @Override
                 public void onResponse(Call call, final Response response) throws IOException {
-                    final String responseBody = response.body().string().trim();
+                    final var responseBody = response.body().string().trim();
                     sconnect.getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Headers b = response.headers();
-                            HashMap<String, Object> map = new HashMap<>();
-                            for (String s : b.names()) {
-                                map.put(s, b.get(s) != null ? b.get(s) : "null");
+                        @Override public void run() {
+                            var b = response.headers();
+                            var map = new HashMap<String, String>();
+                            for (var k : b.names()) {
+                                map.put(k, b.get(k) != null ? b.get(k) : "null");
                             }
                             callback.onSuccess(new SResponse(responseBody), tag, map);
                         }
