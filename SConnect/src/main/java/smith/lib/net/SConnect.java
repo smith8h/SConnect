@@ -18,15 +18,15 @@ public class SConnect {
     public static final int PARAM = 0;
     public static final int BODY = 1;
     
-    private Map<String, String> params = new HashMap<>();
-	private Map<String, String> headers = new HashMap<>();
+    private Map<String, Object> params = new HashMap<>();
+	private Map<String, Object> headers = new HashMap<>();
 	
-    private Context context;
+    private Activity context;
     private SConnectCallBack callback;
 	private int paramsType = 0;
     private String url;
     
-	public static SConnect with(Context context) {
+	public static SConnect with(Activity context) {
         SConnect sc = new SConnect();
         sc.context = context;
 		return sc;
@@ -37,12 +37,12 @@ public class SConnect {
         return this;
     }
     
-    public SConnect headers(Map<String, String> headers) {
+    public SConnect headers(Map<String, Object> headers) {
 		this.headers = headers;
         return this;
 	}
 	
-	public SConnect params(Map<String, String> params, int type) {
+	public SConnect params(Map<String, Object> params, int type) {
 		this.params = params;
 		this.paramsType = type;
         return this;
@@ -85,20 +85,20 @@ public class SConnect {
     	connect(DELETE, url, tag);
     }
     
-    public Map<String, String> getHeaders() {
+    protected Map<String, Object> getHeaders() {
 		return headers;
 	}
     
-    public Map<String, String> getParams() {
+    protected Map<String, Object> getParams() {
 		return params;
 	}
 	
-	public int getParamsType() {
+	protected int getParamsType() {
 		return paramsType;
 	}
     
-    public Activity getActivity() {
-        return (Activity) context;
+    protected Activity getActivity() {
+        return context;
     }
     
     private void connect(String method, String url, String tag) {

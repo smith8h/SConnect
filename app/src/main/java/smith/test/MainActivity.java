@@ -1,24 +1,20 @@
 package smith.test;
 
 import android.os.Bundle;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
-import com.itsaky.androidide.logsender.LogSender;
-import java.util.HashMap;
+//import com.itsaky.androidide.logsender.LogSender;
 import java.util.Map;
 import smith.lib.net.SConnect;
 import smith.lib.net.SConnectCallBack;
 import smith.lib.net.SResponse;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SConnectCallBack {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        LogSender.startLogging(this);
+        //LogSender.startLogging(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
@@ -26,31 +22,20 @@ public class MainActivity extends AppCompatActivity {
     public void check(View v) {
         
         String tag = "someTag"; 
-        String url = "https://smithdev.t.me"; // follow me there 😐
+        String url = "https://smithdev.t.me";
         
-        if (SConnect.isDeviceConnected(this))
-        SConnect.with(this)
-                .callback(new SConnectCallBack() {
-                    @Override
-                    public void onSuccess(SResponse response, String tag, Map<String, String> responseHeaders) {
-                        // use (response, tag, headers)
-                        Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
-                    }
-                    @Override
-                    public void onFailure(SResponse response, String tag) {
-                        // use (response, tag)
-                        Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .headers(new HashMap<String, String>() {{
-                    put("key", "value");
-                    // ...
-                }})
-                .params(new HashMap<String, String>() {{
-                    put("key", "value");
-                    // ...
-                }}, SConnect.PARAM) // BODY
-                .url(url).get(tag);
-                // get, post, put, delete
+        if (SConnect.isDeviceConnected(this)) {
+            SConnect.with(this).callback(this).url(url).get(tag);
+        }
+    }
+    
+    @Override
+    public void onSuccess(SResponse response, String tag, Map<String, Object> responseHeaders) {
+        Toast.makeText(this, response.toString(), Toast.LENGTH_SHORT).show();
+    }
+    
+    @Override
+    public void onFailure(SResponse response, String tag) {
+        Toast.makeText(this, response.toString(), Toast.LENGTH_SHORT).show();
     }
 }

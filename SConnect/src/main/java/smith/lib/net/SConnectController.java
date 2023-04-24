@@ -1,5 +1,8 @@
 package smith.lib.net;
 
+import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Looper;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.security.SecureRandom;
@@ -15,6 +18,7 @@ class SConnectController {
     
     private static final int SOCKET_TIMEOUT = 15000;
     private static final int READ_TIMEOUT = 25000;
+    
     protected OkHttpClient client;
     private static SConnectController mInstance;
 
@@ -30,9 +34,7 @@ class SConnectController {
                 final var trustAllCerts = new TrustManager[] {
                     new X509TrustManager() {
                         @Override public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {}
-
                         @Override public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {}
-
                         @Override public X509Certificate[] getAcceptedIssuers() {
                             return new X509Certificate[] {};
                         }
@@ -64,7 +66,7 @@ class SConnectController {
         var headerBuilder = new Headers.Builder();
 
         if (sconnect.getHeaders().size() > 0) {
-            sconnect.getHeaders().forEach((key, value) -> headerBuilder.add(key, value));
+            sconnect.getHeaders().forEach((key, value) -> headerBuilder.add(key, String.valueOf(value)));
         }
 
         try {
@@ -78,14 +80,14 @@ class SConnectController {
                     }
 
                     if (sconnect.getParams().size() > 0) {
-                        sconnect.getParams().forEach((key, value) -> httpBuilder.addQueryParameter(key, value));
+                        sconnect.getParams().forEach((key, value) -> httpBuilder.addQueryParameter(key, String.valueOf(value)));
                     }
 
                     reqBuilder.url(httpBuilder.build()).headers(headerBuilder.build()).get();
                 } else {
                     var formBuilder = new FormBody.Builder();
                     if (sconnect.getParams().size() > 0) {
-                        sconnect.getParams().forEach((key, value) -> formBuilder.add(key, value));
+                        sconnect.getParams().forEach((key, value) -> formBuilder.add(key, String.valueOf(value)));
                     }
                     var reqBody = formBuilder.build();
                     reqBuilder.url(url).headers(headerBuilder.build()).method(method, reqBody);
@@ -108,7 +110,7 @@ class SConnectController {
             getClient().newCall(req).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, final IOException e) {
-                    sconnect.getActivity().runOnUiThread(new Runnable() {
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override public void run() {
                             callback.onFailure(new SResponse(e.getMessage()), tag);
                         }
@@ -118,13 +120,11 @@ class SConnectController {
                 @Override
                 public void onResponse(Call call, final Response response) throws IOException {
                     final var responseBody = response.body().string().trim();
-                    sconnect.getActivity().runOnUiThread(new Runnable() {
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override public void run() {
                             var b = response.headers();
-                            var map = new HashMap<String, String>();
-                            for (var k : b.names()) {
-                                map.put(k, b.get(k) != null ? b.get(k) : "null");
-                            }
+                            var map = new HashMap<String, Object>();
+                            for (var k : b.names()) map.put(k, b.get(k) != null ? b.get(k) : "null");
                             callback.onSuccess(new SResponse(responseBody), tag, map);
                         }
                     });

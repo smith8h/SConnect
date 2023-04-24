@@ -4,6 +4,7 @@ buildscript {
         gradlePluginPortal()
         google()
         jcenter()
+        maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
     }
 }
 
@@ -18,6 +19,7 @@ allprojects {
         google()
         jcenter()
         maven { url 'https://jitpack.io' }
+        maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
     }
 }
 
