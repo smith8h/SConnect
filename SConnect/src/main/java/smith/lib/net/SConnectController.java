@@ -1,6 +1,6 @@
 package smith.lib.net;
 
-import android.os.CountDownTimer;
+
 import android.os.Handler;
 import android.os.Looper;
 import com.google.gson.Gson;
@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.security.SecureRandom;
 import java.security.cert.*;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import javax.net.ssl.*;
 import okhttp3.*;
@@ -122,9 +121,12 @@ class SConnectController {
                     final var responseBody = response.body().string().trim();
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override public void run() {
-                            var b = response.headers();
+                            var headers = response.headers();
                             var map = new HashMap<String, Object>();
-                            for (var k : b.names()) map.put(k, b.get(k) != null ? b.get(k) : "null");
+                            for (var key : headers.names()) {
+                                Object value = headers.get(key) != null ? headers.get(key) : "null";
+                                map.put(key, value);
+                            }
                             callback.onSuccess(new SResponse(responseBody), tag, map);
                         }
                     });
