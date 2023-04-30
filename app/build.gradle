@@ -4,6 +4,8 @@ plugins {
 
 android {
     compileSdk 33
+    
+    namespace "smith.test"
 
     defaultConfig {
         applicationId "smith.test"

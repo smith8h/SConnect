@@ -25,13 +25,20 @@ public class MainActivity extends AppCompatActivity implements SConnectCallBack 
         String url = "https://smithdev.t.me";
         
         if (SConnect.isDeviceConnected(this)) {
-            SConnect.with(this).callback(this).url(url).get(tag);
+            SConnect.with(this)
+                .callback(this)
+                .url(url)
+                .tag(tag)
+                .get();
         }
     }
     
     @Override
     public void onSuccess(SResponse response, String tag, Map<String, Object> responseHeaders) {
-        Toast.makeText(this, response.toString(), Toast.LENGTH_SHORT).show();
+        if (tag.equals("someTag"))
+            Toast.makeText(this, response.toString(), Toast.LENGTH_SHORT).show();
+        else
+            Toast.makeText(this, "response of another request with another tag", Toast.LENGTH_SHORT).show();
     }
     
     @Override
