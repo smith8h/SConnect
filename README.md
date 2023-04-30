@@ -139,6 +139,10 @@ Dealing with **Json response* using `SResponse` class
     boolean hasKey = object.hasKey("key");
     // has value? (accepts anything)
     boolean hasValue = object.hasValue(Object);
+    // iterate through keys & values
+    object.forEach((key, value) -> {
+        // use key || value
+    });
     // size
     int size = object.size();
     // is empty?
@@ -172,6 +176,10 @@ Dealing with **Json response* using `SResponse` class
     SResponse.Array a = array.getArray();
     // contains something?
     boolean contains = array.contains(Object);
+    // iterate through items
+    array.forEach(item -> {
+        // use item
+    });
     // size
     int size = array.size();
     // is empty
