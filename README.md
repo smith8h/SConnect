@@ -1,9 +1,10 @@
 # SConnect
 
 ![stability-stable](https://img.shields.io/badge/stability-stable-green.svg)
-![minimumSDK](https://img.shields.io/badge/minSDK-21-f39f37)
-![stable version](https://img.shields.io/badge/stable_version-v3.0-blue)
+![minimumSDK](https://img.shields.io/badge/minSDK-24-f39f37)
+![stable version](https://img.shields.io/badge/stable_version-v3.2-blue)
 ![Repository size](https://img.shields.io/github/repo-size/smith8h/SConnect)
+
 <br/>
 
 **(S-Connect)** A Http client based library that use *OkHttp3* for simply making requests to URLs and APIs, and get a response as Json or plain text.
@@ -30,14 +31,14 @@ allprojects {
 > **Step 2.** Add the dependency:
 ```gradle
 dependencies {
-    implementation 'com.github.smith8h:SConnect:v3.1'
+    implementation 'com.github.smith8h:SConnect:v3.2'
 }
 ```
 
 <br/>
 
 # Documentation
-To create a connect first pass a context using `with()` method:
+To create a connection first pass a context using `with()` method:
 ```java
     SConnect.with(this)
 ```
@@ -59,22 +60,26 @@ Then pass the callback interface to deal with the response using `callback()` me
 ```
 After that, if you need to add headers, params to your connection. add them using `headers()` and `params()` methods:
 ```java
-    .headers(Map<String, String>)
-    .params(Map<String, String>, SConnect.PARAM)
+    .headers(Map<String, Object>)
+    .params(Map<String, Object>, SConnect.PARAM)
     // or SConnect.BODY
 ```
 then pass the url using `url()` method:
 ```java
     .url("url")
 ```
+**Optional method |** use `tag()` to set a tag to every connection (useful when you do a multiple connections at same time and need to recognize them).
+```java
+    .tag("someTag")
+```
 finaly, use any of `get()`, `post()`, `put()` or `delete()` methods corrisponding to your connection:
 > you can pass a tag to recognize multiple connections
 ```java
-    .get() // post() | put() | delete()
-    // or get(tag) | post(tag) | put(tag) | delete(tag)
+    .get()
+    // or: post() | put() | delete()
 ```
 
-**Final codes**:
+**Final code**:
 • connections doesn't need params/headers:
 ```java
     SConnect.with(this)
@@ -90,8 +95,8 @@ finaly, use any of `get()`, `post()`, `put()` or `delete()` methods corrispondin
             .params(params, SConnect.PARAM) // BODY
             .headers(headers)
             .url(url)
+            .tag("sample")
             .get(); // post | put | delete
-            // also pass tag if you need to recognize multiple requesrs which one is giving response
 ```
 
 <br/>
