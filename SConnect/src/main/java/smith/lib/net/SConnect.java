@@ -13,6 +13,7 @@ public class SConnect {
     private static final String POST = "POST";
     private static final String PUT = "PUT";
     private static final String DELETE = "DELETE";
+    
     private static final String TAG = "DefaultTag";
     
     public static final int PARAM = 0;
@@ -21,14 +22,15 @@ public class SConnect {
     private Map<String, Object> params = new HashMap<>();
 	private Map<String, Object> headers = new HashMap<>();
 	
-    private Activity context;
+    private Activity activity;
     private SConnectCallBack callback;
 	private int paramsType = 0;
     private String url;
+    private String tag = TAG;
     
-	public static SConnect with(Activity context) {
+	public static SConnect with(Activity activity) {
         SConnect sc = new SConnect();
-        sc.context = context;
+        sc.activity = activity;
 		return sc;
 	}
     
@@ -53,35 +55,24 @@ public class SConnect {
         return this;
     }
     
-    public void get() {
-    	connect(GET, url, TAG);
+    public SConnect tag(String tag) {
+    	this.tag = tag;
+        return this;
     }
     
-    public void get(String tag) {
+    public void get() {
     	connect(GET, url, tag);
     }
     
     public void post() {
-    	connect(POST, url, TAG);
-    }
-    
-    public void post(String tag) {
     	connect(POST, url, tag);
     }
     
     public void put() {
-    	connect(PUT, url, TAG);
-    }
-    
-    public void put(String tag) {
     	connect(PUT, url, tag);
     }
     
     public void delete() {
-    	connect(DELETE, url, TAG);
-    }
-    
-    public void delete(String tag) {
     	connect(DELETE, url, tag);
     }
     
@@ -98,7 +89,7 @@ public class SConnect {
 	}
     
     protected Activity getActivity() {
-        return context;
+        return activity;
     }
     
     private void connect(String method, String url, String tag) {
