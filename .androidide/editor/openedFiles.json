@@ -1,20 +1,35 @@
 {
   "allFiles": [
     {
-      "file": "/storage/emulated/0/.AndroidIDE/SConnect/README.md",
+      "file": "/storage/emulated/0/.AndroidIDE/SConnect/SConnect/src/main/java/smith/lib/net/SResponse.java",
       "selection": {
         "end": {
-          "column": 42,
+          "column": 36,
           "index": -1,
-          "line": 98
+          "line": 179
         },
         "start": {
-          "column": 42,
+          "column": 36,
           "index": -1,
-          "line": 98
+          "line": 179
+        }
+      }
+    },
+    {
+      "file": "/storage/emulated/0/.AndroidIDE/SConnect/app/src/main/java/smith/test/MainActivity.java",
+      "selection": {
+        "end": {
+          "column": 29,
+          "index": -1,
+          "line": 51
+        },
+        "start": {
+          "column": 29,
+          "index": -1,
+          "line": 51
         }
       }
     }
   ],
-  "selectedFile": "/storage/emulated/0/.AndroidIDE/SConnect/README.md"
+  "selectedFile": "/storage/emulated/0/.AndroidIDE/SConnect/app/src/main/java/smith/test/MainActivity.java"
 }

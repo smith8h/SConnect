@@ -1,6 +1,8 @@
 package smith.lib.net;
 
 import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import org.json.*;
 
 public class SResponse {
@@ -96,6 +98,10 @@ public class SResponse {
         public boolean isEmpty() {
             return list.isEmpty();
         }
+        
+        public void forEach(Consumer<Object> consumer) {
+        	this.list.forEach(consumer);
+        }
 
         @Override
         public String toString() {
@@ -168,6 +174,10 @@ public class SResponse {
         
         public boolean hasValue(Object value) {
             return values().contains(value);
+        }
+        
+        public void forEach(BiConsumer<String, Object> consumer) {
+        	this.map.forEach(consumer);
         }
 
         public int size() {

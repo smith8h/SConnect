@@ -39,6 +39,18 @@ public class MainActivity extends AppCompatActivity implements SConnectCallBack 
             Toast.makeText(this, response.toString(), Toast.LENGTH_SHORT).show();
         else
             Toast.makeText(this, "response of another request with another tag", Toast.LENGTH_SHORT).show();
+            
+        // a workaround of SResponse class
+        SResponse.Array array = response.getArray();
+        array.forEach(item -> {
+            Object o = item;
+        });
+        
+        SResponse.Map map = array.getMap(0);
+        map.forEach((key, value) -> {
+            String k = key;
+            Object v = value;
+        });
     }
     
     @Override
