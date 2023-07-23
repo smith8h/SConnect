@@ -1,21 +1,22 @@
 package smith.lib.net;
 
+import androidx.annotation.NonNull;
 import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
+import java.util.function.*;
 import org.json.*;
 
+@SuppressWarnings({"Unused"})
 public class SResponse {
     private Map object;
     private Array array;
-    private String response;
+    private final String response;
 
     public SResponse(String response) {
         this.response = response;
         try { object = new Map(response); }
         catch (Exception e) {
             try { array = new Array(response); }
-            catch (Exception ee) {}
+            catch (Exception ignored) {}
         }
     }
 
@@ -31,6 +32,7 @@ public class SResponse {
         return array != null;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return response;
@@ -46,8 +48,8 @@ public class SResponse {
 
     public class Array {
 
-        private List<Object> list = new ArrayList<>();
-        private String response;
+        private final List<Object> list = new ArrayList<>();
+        private final String response;
 
         public Array(String json) {
             response = json;
@@ -56,7 +58,7 @@ public class SResponse {
                 for (int i = 0; i < array.length(); i++) {
                     list.add(array.get(i));
                 }
-            } catch (Exception e) {}
+            } catch (Exception ignored) {}
         }
 
         public Object get(int index) {
@@ -68,11 +70,11 @@ public class SResponse {
         }
 
         public int getInt(int index) {
-            return Integer.valueOf(list.get(index).toString());
+            return Integer.parseInt(list.get(index).toString());
         }
 
         public float getFloat(int index) {
-            return Float.valueOf(list.get(index).toString());
+            return Float.parseFloat(list.get(index).toString());
         }
 
         public boolean getBoolean(int index) {
@@ -103,6 +105,7 @@ public class SResponse {
         	this.list.forEach(consumer);
         }
 
+        @NonNull
         @Override
         public String toString() {
             return response;
@@ -115,8 +118,8 @@ public class SResponse {
 
     public class Map {
 
-        private HashMap<String, Object> map = new HashMap<>();
-        private String response;
+        private final HashMap<String, Object> map = new HashMap<>();
+        private final String response;
 
         public Map(String json) {
             response = json;
@@ -127,7 +130,7 @@ public class SResponse {
                     String key = keys.next();
                     map.put(key, object.get(key));
                 }
-            } catch (Exception e) {}
+            } catch (Exception ignored) {}
         }
 
         public Object get(String key) {
@@ -135,15 +138,15 @@ public class SResponse {
         }
 
         public String getString(String key) {
-            return map.get(key).toString();
+            return Objects.requireNonNull(map.get(key)).toString();
         }
 
         public int getInt(String key) {
-            return Integer.valueOf(map.get(key).toString());
+            return Integer.parseInt(Objects.requireNonNull(map.get(key)).toString());
         }
 
         public float getFloat(String key) {
-            return Float.valueOf(map.get(key).toString());
+            return Float.parseFloat(Objects.requireNonNull(map.get(key)).toString());
         }
 
         public boolean getBoolean(String key) {
@@ -151,11 +154,11 @@ public class SResponse {
         }
 
         public Map getMap(String key) {
-            return new Map(map.get(key).toString());
+            return new Map(Objects.requireNonNull(map.get(key)).toString());
         }
 
         public Array getArray(String key) {
-            return new Array(map.get(key).toString());
+            return new Array(Objects.requireNonNull(map.get(key)).toString());
         }
 
         public Set<String> keys() {
@@ -188,6 +191,7 @@ public class SResponse {
             return map.isEmpty();
         }
 
+        @NonNull
         @Override
         public String toString() {
             return response;

@@ -1,10 +1,13 @@
 plugins {
     id 'com.android.library'
+    id 'maven-publish'
 }
 
 android {
     namespace 'smith.lib.net'
+
     compileSdk 33
+    buildToolsVersion '33.0.2'
 
     defaultConfig {
         minSdk 24
@@ -27,7 +30,24 @@ android {
 }
 
 dependencies {
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.10'
     implementation 'com.squareup.okio:okio:3.2.0'
     implementation 'com.google.code.gson:gson:2.10'
+}
+
+def artifactId = "SDialogs"
+def groupId = "smith.lib"
+
+project.afterEvaluate {
+    publishing {
+        publications {
+            library(MavenPublication) {
+                setGroupId groupId
+                setArtifactId artifactId
+                version android.defaultConfig.versionName
+                artifact bundleReleaseAar
+            }
+        }
+    }
 }
