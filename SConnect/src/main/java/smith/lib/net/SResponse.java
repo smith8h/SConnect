@@ -73,7 +73,7 @@ public class SResponse {
     }
 
     /**
-     * Deal with array json response got from connection result.
+     * Deal with Array json response got from connection result.
      */
     public class Array {
 
@@ -193,6 +193,9 @@ public class SResponse {
         }
     }
 
+    /**
+     * Deal with Object json response got from connection result.
+     */
     public class Map {
 
         private final HashMap<String, Object> map = new HashMap<>();
@@ -210,70 +213,128 @@ public class SResponse {
             } catch (Exception ignored) {}
         }
 
+        /**
+         * @param key the key of the value needed.
+         * @return the value as wild Object (Any) type.
+         */
         public Object get(String key) {
             return map.get(key);
         }
 
+        /**
+         * @param key th key of the string value needed.
+         * @return String value stored in that key.
+         */
         public String getString(String key) {
             return Objects.requireNonNull(map.get(key)).toString();
         }
 
+        /**
+         * @param key th key of the Int value needed.
+         * @return Int value stored in that key.
+         */
         public int getInt(String key) {
             return Integer.parseInt(Objects.requireNonNull(map.get(key)).toString());
         }
 
+        /**
+         * @param key th key of the float value needed.
+         * @return float value stored in that key.
+         */
         public float getFloat(String key) {
             return Float.parseFloat(Objects.requireNonNull(map.get(key)).toString());
         }
 
+        /**
+         * @param key th key of the boolean value needed.
+         * @return boolean value stored in that key.
+         */
         public boolean getBoolean(String key) {
             return (boolean) map.get(key);
         }
 
+        /**
+         * @param key the key of the SResponse.Map Object value needed.
+         * @return SResponse.Map Object value stored in that key.
+         */
         public Map getMap(String key) {
             return new Map(Objects.requireNonNull(map.get(key)).toString());
         }
 
+        /**
+         * @param key the key of the SResponse.Array Object value needed.
+         * @return SResponse.Array Object value stored in that key.
+         */
         public Array getArray(String key) {
             return new Array(Objects.requireNonNull(map.get(key)).toString());
         }
 
+        /**
+         * @return A set of keys as string set in the Map object.
+         */
         public Set<String> keys() {
             return map.keySet();
         }
-        
+
+        /**
+         * @return A list of values as List of Objects.
+         */
         public List<Object> values() {
         	List<Object> values = new ArrayList<>();
             for (String key: keys()) values.add(map.get(key));
             return values;
         }
 
+        /**
+         * @param key the key you need to check its existence.
+         * @return true if the key is already in the object.
+         */
         public boolean hasKey(String key) {
             return map.get(key) != null;
         }
-        
+
+        /**
+         * @param value the value you need to check its existence.
+         * @return true if the value is already in the object.
+         */
         public boolean hasValue(Object value) {
             return values().contains(value);
         }
-        
+
+        /**
+         * Iterate through each item in the Array.
+         * @param consumer A function that deal with the item's key and value when iterating through items.
+         */
         public void forEach(BiConsumer<String, Object> consumer) {
         	this.map.forEach(consumer);
         }
 
+        /**
+         * @return The size of keys stored in that object.
+         */
         public int size() {
             return map.size();
         }
 
+        /**
+         * @return true if the object is empty.
+         */
         public boolean isEmpty() {
             return map.isEmpty();
         }
 
+        /**
+         * @return the response as it received from connection result.
+         */
         @NonNull
         @Override
         public String toString() {
             return response;
         }
 
+        /**
+         * @return the response as Map of string keys and object values.
+         */
         public HashMap<String, Object> toMap() {
             return map;
         }
