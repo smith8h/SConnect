@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void check(View v) {
         
-        String tag = "someTag"; 
+        String tag = "someTag";
         String url = "https://smithdev.t.me";
         
         if (SConnect.isDeviceConnected(this)) {

@@ -5,6 +5,11 @@ import java.util.*;
 import java.util.function.*;
 import org.json.*;
 
+
+/**
+ *  The powerful class that manage the result of the connection as JSON objects or arrays,
+ *  or simple string response if needed.
+ */
 @SuppressWarnings({"Unused"})
 public class SResponse {
     private Map object;
@@ -20,32 +25,56 @@ public class SResponse {
         }
     }
 
+    /**
+     * Check the response for JSON validity.
+     * @return true if the response is json in general.
+     */
     public boolean isJSON() {
         return object != null || array != null;
     }
 
+    /**
+     * Check the response for JSON Object validity.
+     * @return true if the response is json object.
+     */
     public boolean isMap() {
         return object != null;
     }
 
+    /**
+     * Check the response for JSON Array validity.
+     * @return true if the response is json array.
+     */
     public boolean isArray() {
         return array != null;
     }
 
+    /**
+     * @return the response as it received from connection result.
+     */
     @NonNull
     @Override
     public String toString() {
         return response;
     }
 
+    /**
+     * @return the response as JSON Object.
+     */
     public Map getMap() {
         return object;
     }
 
+    /**
+     * @return the response as JSON Array.
+     */
     public Array getArray() {
         return array;
     }
 
+    /**
+     * Deal with array json response got from connection result.
+     */
     public class Array {
 
         private final List<Object> list = new ArrayList<>();
@@ -61,56 +90,104 @@ public class SResponse {
             } catch (Exception ignored) {}
         }
 
+        /**
+         * @param index the index of Object item
+         * @return Wild Object (Any) at that index.
+         */
         public Object get(int index) {
             return list.get(index);
         }
 
+        /**
+         * @param index the index of Object item
+         * @return string value at that index.
+         */
         public String getString(int index) {
             return list.get(index).toString();
         }
 
+        /**
+         * @param index the index of Object item
+         * @return int value at that index.
+         */
         public int getInt(int index) {
             return Integer.parseInt(list.get(index).toString());
         }
 
+        /**
+         * @param index the index of Object item
+         * @return float value at that index.
+         */
         public float getFloat(int index) {
             return Float.parseFloat(list.get(index).toString());
         }
 
+        /**
+         * @param index the index of Object item
+         * @return boolean value at that index.
+         */
         public boolean getBoolean(int index) {
             return (boolean) list.get(index);
         }
 
+        /**
+         * @param index the index of Object item
+         * @return SResponse.Map object at that index.
+         */
         public Map getMap(int index) {
             return new Map(list.get(index).toString());
         }
 
+        /**
+         * @param index the index of Object item
+         * @return SResponse.Array object at that index.
+         */
         public Array getArray(int index) {
             return new Array(list.get(index).toString());
         }
 
+        /**
+         * @param object any value
+         * @return true if that value exist in Array object.
+         */
         public boolean contains(Object object) {
             return list.contains(object);
         }
 
+        /**
+         * @return The size of the Array.
+         */
         public int size() {
             return list.size();
         }
-        
+
+        /**
+         * @return true if the Array is empty.
+         */
         public boolean isEmpty() {
             return list.isEmpty();
         }
-        
+
+        /**
+         * Iterate through each item in the Array.
+         * @param consumer A function that deal with the item when iterating through items.
+         */
         public void forEach(Consumer<Object> consumer) {
         	this.list.forEach(consumer);
         }
 
+        /**
+         * @return the response as it received from connection result.
+         */
         @NonNull
         @Override
         public String toString() {
             return response;
         }
 
+        /**
+         * @return Array object as List of Objects, no matter what the values inside it.
+         */
         public List<Object> toList() {
             return list;
         }

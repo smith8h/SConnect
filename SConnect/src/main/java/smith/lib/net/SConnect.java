@@ -143,9 +143,9 @@ public class SConnect {
 	}
 
     /**
-     * Check internet connection validity.
+     * Check internet connection availability.
      * @param context Current context or Activity.
-     * @return True if the device is connected to the internet.
+     * @return true if the device is connected to the internet.
      */
 	public static boolean isDeviceConnected(@NonNull Context context) {
 		var connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
