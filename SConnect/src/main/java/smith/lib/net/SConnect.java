@@ -19,6 +19,7 @@ public class SConnect {
     private static final String DELETE = "DELETE";
     private static final String PATCH = "PATCH";
     private static final String OPTIONS = "OPTIONS";
+    private static final String HEAD = "HEAD";
 
     /**
      * Default SConnect tag used in connections doesn't have tag to identify.
@@ -108,7 +109,7 @@ public class SConnect {
      * </p>
      */
     public void get() {
-    	connect(GET, url, tag);
+    	connect(GET);
     }
 
     /**
@@ -116,7 +117,7 @@ public class SConnect {
      * create or rewrite a particular resource/data.
      */
     public void post() {
-    	connect(POST, url, tag);
+    	connect(POST);
     }
 
     /**
@@ -127,7 +128,7 @@ public class SConnect {
      * </p>
      */
     public void put() {
-    	connect(PUT, url, tag);
+    	connect(PUT);
     }
 
     /**
@@ -135,7 +136,7 @@ public class SConnect {
      * the association between the target resource and its current functionality.
      */
     public void delete() {
-    	connect(DELETE, url, tag);
+    	connect(DELETE);
     }
 
     /**
@@ -147,7 +148,7 @@ public class SConnect {
             if (callback != null)
                 callback.onFailure(new SResponse("PATCH request method does not contain any request body params!"), tag);
         }
-        else connect(PATCH, url, tag);
+        else connect(PATCH);
     }
 
     /**
@@ -160,7 +161,22 @@ public class SConnect {
      * Requires to set a headers to the request, roll back to {@link SConnect#headers(Map)}.
      */
     public void options() {
-        connect(OPTIONS, url, tag);
+        if (headers.isEmpty()) {
+            if (callback != null)
+                callback.onFailure(new SResponse("OPTIONS request method does not contain any request headers!"), tag);
+        }
+        else connect(OPTIONS);
+    }
+
+    /**
+     * Create a connection with OPTIONS method, use it to ask for a response identical to that of a GET request,
+     * but without the response body.
+     * <p>
+     *     This is useful for retrieving meta-information written in response headers, without having to transport the entire content.
+     * </p>
+     */
+    public void head() {
+        connect(HEAD);
     }
 
     protected Map<String, Object> getHeaders() {
@@ -179,13 +195,13 @@ public class SConnect {
         return (Activity) context;
     }
     
-    private void connect(String method, String url, String tag) {
+    private void connect(String method) {
 		SConnectController.getInstance().connect(this, method, url, tag, callback);
 	}
 
     /**
-     * Check internet connection availability.
-     * @param context Current context or Activity.
+     * Check internet availability on the device, useful when checking before making connections.
+     * @param context current {@link Context} or {@link Activity}.
      * @return true if the device is connected to the internet.
      */
 	public static boolean isDeviceConnected(@NonNull Context context) {
