@@ -35,17 +35,17 @@ allprojects {
 ```gradle
 dependencies {
     ...
-    implementation 'com.github.smith8h:SConnect:v3.2'
+    implementation 'com.github.smith8h:SConnect:v4.0'
     ...
 }
 ```
-> **Important** Add these dependencies in case you faces compile or runtime errors:
+> **Important Step** Add these dependencies in case you facing some compile or runtime errors:
 ```gradle
 dependencies {
     ...
-    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.10'
-    implementation 'com.squareup.okio:okio:3.2.0'
-    implementation 'com.google.code.gson:gson:2.10'
+    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.11'
+    implementation 'com.squareup.okio:okio:3.5.2'
+    implementation 'com.google.code.gson:gson:2.10.1'
     ...
 }
 ```

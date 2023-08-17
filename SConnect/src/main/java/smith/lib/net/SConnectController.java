@@ -1,7 +1,6 @@
 package smith.lib.net;
 
 import android.annotation.SuppressLint;
-import android.os.*;
 import androidx.annotation.NonNull;
 import com.google.gson.Gson;
 import java.io.IOException;
@@ -14,10 +13,10 @@ import okhttp3.*;
 
 @SuppressWarnings({"unused", "all"})
 class SConnectController {
-    
+
     private static final int SOCKET_TIMEOUT = 15000;
     private static final int READ_TIMEOUT = 25000;
-    
+
     protected OkHttpClient client;
     private static SConnectController mInstance;
 
@@ -31,14 +30,14 @@ class SConnectController {
         if (client == null) {
             var builder = new OkHttpClient.Builder();
             try {
-                 final var trustAllCerts = new TrustManager[] {
-                    new X509TrustManager() {
-                        @Override public void checkClientTrusted(X509Certificate[] chain, String authType) {}
-                        @Override public void checkServerTrusted(X509Certificate[] chain, String authType) {}
-                        @Override public X509Certificate[] getAcceptedIssuers() {
-                            return new X509Certificate[] {};
+                final var trustAllCerts = new TrustManager[]{
+                        new X509TrustManager() {
+                            @Override public void checkClientTrusted(X509Certificate[] chain, String authType) {}
+
+                            @Override public void checkServerTrusted(X509Certificate[] chain, String authType) {}
+
+                            @Override public X509Certificate[] getAcceptedIssuers() {return new X509Certificate[]{};}
                         }
-                    }
                 };
                 final var sslContext = SSLContext.getInstance("TLS");
                 sslContext.init(null, trustAllCerts, new SecureRandom());
@@ -51,7 +50,6 @@ class SConnectController {
             } catch (Exception ignored) {}
             client = builder.build();
         }
-
         return client;
     }
 
@@ -73,16 +71,14 @@ class SConnectController {
                         return;
                     }
 
-                    if (sconnect.getParams().size() > 0) {
+                    if (sconnect.getParams().size() > 0)
                         sconnect.getParams().forEach((key, value) -> httpBuilder.addQueryParameter(key, String.valueOf(value)));
-                    }
 
                     reqBuilder.url(httpBuilder.build()).headers(headerBuilder.build()).get();
                 } else {
                     var formBuilder = new FormBody.Builder();
-                    if (sconnect.getParams().size() > 0) {
+                    if (sconnect.getParams().size() > 0)
                         sconnect.getParams().forEach((key, value) -> formBuilder.add(key, String.valueOf(value)));
-                    }
                     var reqBody = formBuilder.build();
                     reqBuilder.url(url).headers(headerBuilder.build()).method(method, reqBody);
                 }
@@ -96,13 +92,11 @@ class SConnectController {
             var req = reqBuilder.build();
 
             getClient().newCall(req).enqueue(new Callback() {
-                @Override
-                public void onFailure(@NonNull Call call, @NonNull final IOException e) {
+                @Override public void onFailure(@NonNull Call call, @NonNull final IOException e) {
                     sconnect.getActivity().runOnUiThread(() -> callback.onFailure(new SResponse(e.getMessage()), tag));
                 }
 
-                @Override
-                public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
+                @Override public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
                     final var responseBody = response.body().string().trim();
                     sconnect.getActivity().runOnUiThread(() -> {
                         var headers = response.headers();
@@ -115,8 +109,6 @@ class SConnectController {
                     });
                 }
             });
-        } catch (Exception e) {
-            callback.onFailure(new SResponse(e.getMessage()), tag);
-        }
+        } catch (Exception e) {callback.onFailure(new SResponse(e.getMessage()), tag);}
     }
 }
