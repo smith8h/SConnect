@@ -101,28 +101,37 @@ public class SConnect {
     }
 
     /**
-     * Create a connection with GET method.
+     * Create a connection with GET method, use it to request a representation of the specified resource.
+     * <p>
+     *     Requests using GET should only be used to request data (they shouldn't include data).
+     * </p>
      */
     public void get() {
     	connect(GET, url, tag);
     }
 
     /**
-     * Create a connection with POST method.
+     * Create a connection with POST method, use it to send data to a Specified server in order to
+     * create or rewrite a particular resource/data.
      */
     public void post() {
     	connect(POST, url, tag);
     }
 
     /**
-     * Create a connection with POST method.
+     * Create a connection with POST method, use it for full replacement of an OSLC resource.
+     * <p>
+     *     The PUT method updates both literal properties and local resource properties,
+     *     and it deletes any local resource properties that are not included in the request.
+     * </p>
      */
     public void put() {
     	connect(PUT, url, tag);
     }
 
     /**
-     * Create a connection with DELETE method.
+     * Create a connection with DELETE method, use it for requests that the origin server remove
+     * the association between the target resource and its current functionality.
      */
     public void delete() {
     	connect(DELETE, url, tag);

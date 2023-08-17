@@ -10,7 +10,7 @@ import org.json.*;
  *  The powerful class that manage the result of the connection as JSON objects or arrays,
  *  or simple string response if needed.
  */
-@SuppressWarnings({"Unused"})
+@SuppressWarnings({"unused"})
 public class SResponse {
     private Map object;
     private Array array;
@@ -250,7 +250,7 @@ public class SResponse {
          * @return boolean value stored in that key.
          */
         public boolean getBoolean(String key) {
-            return (boolean) map.get(key);
+            return (boolean) Objects.requireNonNull(map.get(key));
         }
 
         /**
