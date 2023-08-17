@@ -33,7 +33,8 @@ public class MainActivity extends AppCompatActivity implements SConnectCallBack 
                     .tag(tag) // optional.
                     .params(new HashMap<>(), SConnect.BODY) // optional, but required for some methods
                     .headers(new HashMap<>()) // optional, but required for some methods.
-                    .get(); // post, delete, push.
+                    .get(); // post, delete, put, head, options and patch.
+
         }
     }
 
