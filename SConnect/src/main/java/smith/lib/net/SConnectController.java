@@ -72,6 +72,7 @@ class SConnectController {
                     try {
                         httpBuilder = Objects.requireNonNull(HttpUrl.parse(url)).newBuilder();
                     } catch (NullPointerException ne) {
+                        // TODO: edit throw error to sresponse
                         throw new NullPointerException("Unexpected url: " + url);
                     }
 

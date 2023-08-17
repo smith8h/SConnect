@@ -10,16 +10,26 @@ import androidx.annotation.NonNull;
  * The SConnect class helps you create connections
  * to APIs and websites easily with simple and fast codes.
  */
+@SuppressWarnings({"unused"})
 public class SConnect {
     
 	private static final String GET = "GET";
     private static final String POST = "POST";
     private static final String PUT = "PUT";
     private static final String DELETE = "DELETE";
-    
-    private static final String TAG = "DefaultTag";
-    
+    private static final String PATCH = "PATCH";
+
+    /**
+     * Default SConnect tag used in connections doesn't have tag to identify.
+     */
+    public static final String SCONNECT_TAG = "DefaultSConnectTag";
+    /**
+     * The type of request param, used to set params type in {@link SConnect#params(Map, int)}.
+     */
     public static final int PARAM = 0;
+    /**
+     * The type of request body, used to set body type in {@link SConnect#params(Map, int)}.
+     */
     public static final int BODY = 1;
     
     private Map<String, Object> params = new HashMap<>();
@@ -27,9 +37,9 @@ public class SConnect {
 	
     private Context context;
     private SConnectCallBack callback;
-	private int paramsType = 0;
+	private int paramsType = PARAM;
     private String url;
-    private String tag = TAG;
+    private String tag = SCONNECT_TAG;
 
     /**
      * Create new Instance of SConnect.
@@ -46,7 +56,6 @@ public class SConnect {
     /**
      * Set the SConnect CallBack Interface.
      * @param callback A SConnectCallBack interface.
-     * @return The same instance used to set the callback to.
      */
     public SConnect callback(SConnectCallBack callback) {
         this.callback = callback;
@@ -56,7 +65,6 @@ public class SConnect {
     /**
      * Set the headers to your connection.
      * @param headers A Map of Stings as Key, and Objects as Value
-     * @return The same instance used to set the headers to.
      */
     public SConnect headers(Map<String, Object> headers) {
 		this.headers = headers;
@@ -64,9 +72,9 @@ public class SConnect {
 	}
 
     /**
-     * Set the params to your connection.
-     * @param params A Map of Stings as Key, and Objects as Value
-     * @return The same instance used to set the params to.
+     * Set the request params or body to your connection.
+     * @param params A Map of Stings as Key, and Objects as Value.
+     * @param type the request body type, either {@link SConnect#PARAM} or {@link SConnect#BODY}
      */
 	public SConnect params(Map<String, Object> params, int type) {
 		this.params = params;
@@ -77,7 +85,6 @@ public class SConnect {
     /**
      * Set the target URL to your connection.
      * @param url A string URL (The target URL to connect with).
-     * @return The same instance used to set the url to.
      */
     public SConnect url(String url) {
     	this.url = url;
@@ -87,7 +94,6 @@ public class SConnect {
     /**
      * Set the unique tag to your connection.
      * @param tag A string tag to distinguish multiple connections in same interface.
-     * @return The same instance used to set the tag to.
      */
     public SConnect tag(String tag) {
     	this.tag = tag;
@@ -120,6 +126,18 @@ public class SConnect {
      */
     public void delete() {
     	connect(DELETE, url, tag);
+    }
+
+    /**
+     * Create a connection with PATCH method, use it to modify the values of the resource properties.
+     * Requires a request {@link SConnect#BODY}, roll back to {@link SConnect#params(Map, int)}.
+     */
+    public void patch() {
+        if (params.isEmpty()) {
+            if (callback != null)
+                callback.onFailure(new SResponse("PATCH request method does not contain any request body params!"), tag);
+        }
+        else connect(PATCH, url, tag);
     }
 
     protected Map<String, Object> getHeaders() {
