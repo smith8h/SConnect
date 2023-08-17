@@ -5,6 +5,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
+import java.util.HashMap;
 import java.util.Map;
 import smith.lib.net.*;
 
@@ -28,6 +29,8 @@ public class MainActivity extends AppCompatActivity implements SConnectCallBack 
                     .callback(this) // required to get responses.
                     .url(url) // required.
                     .tag(tag) // optional.
+                    .params(new HashMap<>(), SConnect.BODY) // optional, but required for some methods
+                    .headers(new HashMap<>()) // optional, but required for some methods.
                     .get(); // post, delete, push.
         }
     }

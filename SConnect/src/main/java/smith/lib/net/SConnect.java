@@ -18,6 +18,7 @@ public class SConnect {
     private static final String PUT = "PUT";
     private static final String DELETE = "DELETE";
     private static final String PATCH = "PATCH";
+    private static final String OPTIONS = "OPTIONS";
 
     /**
      * Default SConnect tag used in connections doesn't have tag to identify.
@@ -147,6 +148,19 @@ public class SConnect {
                 callback.onFailure(new SResponse("PATCH request method does not contain any request body params!"), tag);
         }
         else connect(PATCH, url, tag);
+    }
+
+    /**
+     * Create a connection with OPTIONS method, use it to request information about the communication
+     * options available for the target resource.
+     * <p>
+     *     The response may include an Allow header indicating allowed HTTP methods on the resource,
+     *     or various Cross Origin Resource Sharing headers.
+     * </p>
+     * Requires to set a headers to the request, roll back to {@link SConnect#headers(Map)}.
+     */
+    public void options() {
+        connect(OPTIONS, url, tag);
     }
 
     protected Map<String, Object> getHeaders() {
