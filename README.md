@@ -44,7 +44,7 @@ dependencies {
 dependencies {
     ...
     implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.11'
-    implementation 'com.squareup.okio:okio:3.5.2'
+    implementation 'com.squareup.okio:okio:3.5.0'
     implementation 'com.google.code.gson:gson:2.10.1'
     ...
 }
