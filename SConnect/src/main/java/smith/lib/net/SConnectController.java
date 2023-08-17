@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 import javax.net.ssl.*;
 import okhttp3.*;
 
-@SuppressWarnings({"Unused"})
+@SuppressWarnings({"unused", "all"})
 class SConnectController {
     
     private static final int SOCKET_TIMEOUT = 15000;
@@ -40,7 +40,6 @@ class SConnectController {
                         }
                     }
                 };
-
                 final var sslContext = SSLContext.getInstance("TLS");
                 sslContext.init(null, trustAllCerts, new SecureRandom());
                 final var sslSocketFactory = sslContext.getSocketFactory();
@@ -50,7 +49,6 @@ class SConnectController {
                 builder.writeTimeout(READ_TIMEOUT, TimeUnit.MILLISECONDS);
                 builder.hostnameVerifier((hostname, session) -> true);
             } catch (Exception ignored) {}
-            
             client = builder.build();
         }
 
@@ -61,9 +59,8 @@ class SConnectController {
         var reqBuilder = new Request.Builder();
         var headerBuilder = new Headers.Builder();
 
-        if (sconnect.getHeaders().size() > 0) {
+        if (sconnect.getHeaders().size() > 0)
             sconnect.getHeaders().forEach((key, value) -> headerBuilder.add(key, String.valueOf(value)));
-        }
 
         try {
             if (sconnect.getParamsType() == SConnect.PARAM) {
@@ -72,8 +69,8 @@ class SConnectController {
                     try {
                         httpBuilder = Objects.requireNonNull(HttpUrl.parse(url)).newBuilder();
                     } catch (NullPointerException ne) {
-                        // TODO: edit throw error to sresponse
-                        throw new NullPointerException("Unexpected url: " + url);
+                        callback.onFailure(new SResponse("Unexpected url: " + url), tag);
+                        return;
                     }
 
                     if (sconnect.getParams().size() > 0) {
@@ -90,16 +87,10 @@ class SConnectController {
                     reqBuilder.url(url).headers(headerBuilder.build()).method(method, reqBody);
                 }
             } else {
-                var reqBody = RequestBody.create("application/json; charset=utf-8;", MediaType.parse(new Gson().toJson(sconnect.getParams())));
-                if (method.equals("GET")) {
-                    reqBuilder.url(url)
-                        .headers(headerBuilder.build())
-                        .get();
-                } else {
-                    reqBuilder.url(url)
-                        .headers(headerBuilder.build())
-                        .method(method, reqBody);
-                }
+                var reqBody = RequestBody.create("application/json; charset=utf-8;",
+                        MediaType.parse(new Gson().toJson(sconnect.getParams())));
+                if (method.equals("GET")) reqBuilder.url(url).headers(headerBuilder.build()).get();
+                else reqBuilder.url(url).headers(headerBuilder.build()).method(method, reqBody);
             }
 
             var req = reqBuilder.build();
@@ -107,13 +98,13 @@ class SConnectController {
             getClient().newCall(req).enqueue(new Callback() {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull final IOException e) {
-                    new Handler(Looper.getMainLooper()).post(() -> callback.onFailure(new SResponse(e.getMessage()), tag));
+                    sconnect.getActivity().runOnUiThread(() -> callback.onFailure(new SResponse(e.getMessage()), tag));
                 }
 
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
                     final var responseBody = response.body().string().trim();
-                    new Handler(Looper.getMainLooper()).post(() -> {
+                    sconnect.getActivity().runOnUiThread(() -> {
                         var headers = response.headers();
                         var map = new HashMap<String, Object>();
                         for (var key : headers.names()) {
