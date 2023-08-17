@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 import smith.lib.net.*;
 
+/** @noinspection UnnecessaryLocalVariable*/
+@SuppressWarnings({"unused"})
 public class MainActivity extends AppCompatActivity implements SConnectCallBack {
 
     @Override
@@ -45,13 +47,14 @@ public class MainActivity extends AppCompatActivity implements SConnectCallBack 
         // a workaround of SResponse class
         SResponse.Array array = response.getArray(); // get response if it was a json array
         array.forEach(item -> { // iterate through its items
-            Object o = item;
+            int o = (int) item;
         });
 
         SResponse.Map map = array.getMap(0); // get an object (map) from that array
         map.forEach((key, value) -> { // iterate through its content by key and value for each data.
+
             String k = key;
-            Object v = value;
+            boolean v = (boolean) value;
         });
     }
 
