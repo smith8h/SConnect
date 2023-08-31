@@ -26,11 +26,11 @@ public class SConnect {
      */
     public static final String SCONNECT_TAG = "DefaultSConnectTag";
     /**
-     * The type of request param, used to set params type in {@link SConnect#params(Map, int)}.
+     * The type of request param, used to set params type in {@link SConnect#params(Map, int)} and {@link SConnect#paramType(int)}.
      */
     public static final int PARAM = 0;
     /**
-     * The type of request body, used to set body type in {@link SConnect#params(Map, int)}.
+     * The type of request body, used to set body type in {@link SConnect#params(Map, int)} and {@link SConnect#paramType(int)}.
      */
     public static final int BODY = 1;
     
@@ -75,7 +75,7 @@ public class SConnect {
 
     /**
      * Set the request params or body to your connection.
-     * @param params A Map of Stings as Key, and Objects as Value.
+     * @param params A Map of Strings as Key, and Objects as Value.
      * @param type the request body type, either {@link SConnect#PARAM} or {@link SConnect#BODY}
      */
 	public SConnect params(Map<String, Object> params, int type) {
@@ -83,6 +83,25 @@ public class SConnect {
 		this.paramsType = type;
         return this;
 	}
+
+    /**
+     * Add param to the connection params.
+     * @param key A String as Key.
+     * @param value A value as any.
+     */
+    public SConnect addParam(String key, Object value) {
+        this.params.put(key, value);
+        return this;
+    }
+
+    /**
+     * Set the type as params or body to your connection.
+     * @param type the request body type, either {@link SConnect#PARAM} or {@link SConnect#BODY}
+     */
+    public SConnect paramsType(int type) {
+        this.paramsType = type;
+        return this;
+    }
 
     /**
      * Set the target URL to your connection.
