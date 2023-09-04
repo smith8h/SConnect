@@ -74,6 +74,16 @@ public class SConnect {
 	}
 
     /**
+     * Add header to the connection headers.
+     * @param key A String as Key.
+     * @param value A value as any.
+     */
+    public SConnect addHeader(String key, Object value) {
+        this.headers.put(key, value);
+        return this;
+    }
+
+    /**
      * Set the request params or body to your connection.
      * @param params A Map of Strings as Key, and Objects as Value.
      * @param type the request body type, either {@link SConnect#PARAM} or {@link SConnect#BODY}

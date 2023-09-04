@@ -39,7 +39,8 @@ dependencies {
     ...
 }
 ```
-> **Important Step** Add these dependencies in case you facing some compile or runtime errors:
+> **Note**
+> Important Step Add these dependencies in case you facing some compile or runtime errors:
 ```gradle
 dependencies {
     ...
@@ -77,6 +78,9 @@ After that, if you need to add headers, params to your connection. add them usin
 ```java
     .headers(Map<String, Object>)
     .params(Map<String, Object>, SConnect.PARAM) // or SConnect.BODY
+
+    // you can use add header one by one
+    .addParam
 ```
 then pass the url using `url()` method:
 ```java
