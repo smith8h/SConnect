@@ -8,30 +8,39 @@
 ![minimumSDK](https://img.shields.io/badge/minSDK-24-f39f37)
 ![Repository size](https://img.shields.io/github/repo-size/smith8h/SConnect)
 
-<br/>
+</br>
 
 **(S-Connect)** A Http client based library that use *OkHttp3* for simply making requests to URLs and APIs, and get a response as Json or plain text.
 
-<br/>
+</br>
 
-**Content**
+## Content
+
 - [**Setup**](#setup)
-- [**Documentations**](#documentations)
+- [**Documentation**](#documentation)
+- [**Example Code**](#example-code)
 - [**Donations :heart:**](#donations)
-<br/>
 
-# Setup
-> **Step 1.** Add the JitPack repository to your build file.</br>
-Add it in your root build.gradle at the end of repositories:
+</br>
+
+## Setup
+
+> **Step 1.**
+> Add the JitPack repository to your build file.</br>
+> Add it in your root build.gradle at the end of repositories:
+
 ```gradle
 allprojects {
     repositories {
-	...
-	maven { url 'https://jitpack.io' }
+        ...
+     maven { url 'https://jitpack.io' }
+        ...
     }
 }
 ```
+
 > **Step 2.** Add the dependency:
+
 ```gradle
 dependencies {
     ...
@@ -39,8 +48,10 @@ dependencies {
     ...
 }
 ```
-> **Note**
-> Important Step Add these dependencies in case you facing some compile or runtime errors:
+
+> [!WARNING]
+> Add these dependencies in case you facing some compile or runtime errors:
+
 ```gradle
 dependencies {
     ...
@@ -50,21 +61,26 @@ dependencies {
     ...
 }
 ```
-<br/>
 
-# Documentation
+</br>
+
+## Documentation
+
 To create a connection first pass a context using `with()` method:
+
 ```java
     SConnect.with(this)
 ```
+
 Then pass the callback interface to deal with the response using `callback()` method:
+
 ```java
     SConnect.with(context).callback(new SConnectCallBack() {
         @Override
         public void onFailure(SResponse response, String tag) {}
             
         @Override
-        public void onSuccess(SResponse response, String tag, HashMap<String, Object> responseHeaders) {
+        public void onSuccess(SResponse response, String tag, Map<String, Object> responseHeaders) {
             // use response, tag, responseHeaders
             if (response.isJSON() && response.isMap()) {
                 Toast.makeText(context, response.getMap().getString("key"), Toast.LENGTH_SHORT).show();
@@ -74,30 +90,46 @@ Then pass the callback interface to deal with the response using `callback()` me
         }
     })
 ```
-After that, if you need to add headers, params to your connection. add them using `headers()` and `params()` methods:
-```java
-    .headers(Map<String, Object>)
-    .params(Map<String, Object>, SConnect.PARAM) // or SConnect.BODY
 
-    // you can use add header one by one
-    .addParam
+After that, if you need to add headers, params to your connection. add them using `headers()` and `params()` methods:
+
+```java
+    .addHeaders(Map<String, Object>)
+    // you can also use add header one by one.
+    .addHeader("key", value)
+
+
+    .addParams(Map<String, Object>)
+    // you can  also use add header one by one.
+    .addParam("key", value)
+        
+    // and then set the param type.
+    .paramsType(SConnect.PARAM) // or BODY
 ```
+
 then pass the url using `url()` method:
+
 ```java
     .url("url")
 ```
+
 **Optional method |** use `tag()` to set a tag to every connection (useful when you do a multiple connections at same time and need to recognize them).
+
 ```java
     .tag("someTag")
 ```
+
 finaly, use any of `get()`, `post()`, `put()`, `delete()`, `patch()`, `options()` or `head()` methods corresponding to your connection:
+
 ```java
     .get()
     // or: post() | put() | delete() | patch() | options() | head()
 ```
 
-**Final code**:
+## Example Code
+
 • connections doesn't need params/headers:
+
 ```java
     SConnect.with(this)
             .callback(callback)
@@ -105,7 +137,9 @@ finaly, use any of `get()`, `post()`, `put()`, `delete()`, `patch()`, `options()
             .get(); // post | put | delete
             // also pass tag if you need to recognize multiple requesrs which one is giving response
 ```
+
 • connections need params/headers:
+
 ```java
 
     Map<String, Object> params = new HashMap<>();
@@ -117,17 +151,19 @@ finaly, use any of `get()`, `post()`, `put()`, `delete()`, `patch()`, `options()
             
     SConnect.with(this)
             .callback(callback)
-            .params(params, SConnect.PARAM) // BODY
-            .headers(headers)
+            .addParams(params)
+            .paramsType(SConnect.PARAM) // or BODY
+            .addHeaders(headers)
             .url("http://example.url.com")
             .tag("sample")
             .get(); // post | put | delete...
 ```
 
-<br/>
+</br>
 
 Dealing with **Json response* using `SResponse` class
 > if response is plain/text or HTML (when requesting websites) simply use `response.toString()` method.
+
 ```java
     // get/check response as json (if get a api json response)
     boolean isJSON = response.isJSON();
@@ -217,22 +253,30 @@ Dealing with **Json response* using `SResponse` class
     
 ```
 
-<br/>
+</br>
 
-# Donations
+## Donations
+
 > If you would like to support this project's further development, the creator of this projects or the continuous maintenance of the project **feel free to donate**.
 Your donation is highly appreciated. Thank you!
-<br/>
+
+</br>
 
 You can **choose what you want to donate**, all donations are awesome!</br>
-<br/>
+
+</br>
 
 [![PayPal](https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://www.paypal.me/husseinshakir)
 [![Buy me a coffee](https://img.shields.io/badge/Buy_Me_A_Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/HusseinShakir)
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/husseinsmith)
-<br/>
+
+</br>
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/smith8h/smith8h/main/20221103_150053.png" style="width: 38%;"/>
-  <br><b>With :heart:</b>
+  </br>
+  <b>
+    With :heart:
+  </b>
 </p>
+</br>

@@ -31,8 +31,9 @@ public class MainActivity extends AppCompatActivity implements SConnectCallBack 
                     .callback(this) // required to get responses.
                     .url(url) // required.
                     .tag(tag) // optional.
-                    .params(new HashMap<>(), SConnect.BODY) // optional, but required for some methods
-                    .headers(new HashMap<>()) // optional, but required for some methods.
+                    .addParams(new HashMap<>()) // optional, but required for some methods.
+                    .paramsType(SConnect.BODY) // optional, but required for some methods.
+                    .addHeaders(new HashMap<>()) // optional, but required for some methods.
                     .get(); // post, delete, put, head, options and patch.
         }
     }

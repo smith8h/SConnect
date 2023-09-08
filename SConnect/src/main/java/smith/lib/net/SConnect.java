@@ -68,7 +68,7 @@ public class SConnect {
      * Set the headers to your connection.
      * @param headers A Map of Stings as Key, and Objects as Value
      */
-    public SConnect headers(Map<String, Object> headers) {
+    public SConnect addHeaders(Map<String, Object> headers) {
 		this.headers = headers;
         return this;
 	}
@@ -86,11 +86,9 @@ public class SConnect {
     /**
      * Set the request params or body to your connection.
      * @param params A Map of Strings as Key, and Objects as Value.
-     * @param type the request body type, either {@link SConnect#PARAM} or {@link SConnect#BODY}
      */
-	public SConnect params(Map<String, Object> params, int type) {
+	public SConnect addParams(Map<String, Object> params) {
 		this.params = params;
-		this.paramsType = type;
         return this;
 	}
 
@@ -187,7 +185,7 @@ public class SConnect {
      *     The response may include an Allow header indicating allowed HTTP methods on the resource,
      *     or various Cross Origin Resource Sharing headers.
      * </p>
-     * Requires to set a headers to the request, roll back to {@link SConnect#headers(Map)}.
+     * Requires to set a headers to the request, roll back to {@link SConnect#addHeaders(Map)}.
      */
     public void options() {
         if (headers.isEmpty()) {
