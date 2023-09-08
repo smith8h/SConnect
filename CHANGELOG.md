@@ -1,5 +1,5 @@
 
-# ChangeLog
+# CHANGELOG
 
 ## v4.1 Latest
 
@@ -8,7 +8,7 @@
 - Rename `params` to `addParams` and remove params type argument to `paramsType` method.
 - New `addHeader` method to add headers separately.
 - Rename `headers` to `addHeaders`.
-- 
+
 **Full Changelog**: [v4.0...v4.1](https://github.com/smith8h/SConnect/compare/v4.0...v4.1)
 
 ## v4.0
