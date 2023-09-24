@@ -1,10 +1,14 @@
 package smith.lib.net;
 
 import android.app.Activity;
-import android.net.*;
-import java.util.*;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
+
 import androidx.annotation.NonNull;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The SConnect class helps you create connections
@@ -26,11 +30,11 @@ public class SConnect {
      */
     public static final String SCONNECT_TAG = "DefaultSConnectTag";
     /**
-     * The type of request param, used to set params type in {@link SConnect#params(Map, int)} and {@link SConnect#paramType(int)}.
+     * The type of request param, used to set params type for {@link SConnect#addParams(Map)} using {@link SConnect#paramsType(int)}.
      */
     public static final int PARAM = 0;
     /**
-     * The type of request body, used to set body type in {@link SConnect#params(Map, int)} and {@link SConnect#paramType(int)}.
+     * The type of request body, used to set body type for {@link SConnect#addParams(Map)} using {@link SConnect#paramsType(int)}.
      */
     public static final int BODY = 1;
     
@@ -174,7 +178,7 @@ public class SConnect {
 
     /**
      * Create a connection with PATCH method, use it to modify the values of the resource properties.
-     * Requires a request {@link SConnect#BODY}, roll back to {@link SConnect#params(Map, int)}.
+     * Requires a request {@link SConnect#BODY}, roll back to {@link SConnect#addParams(Map)}.
      */
     public void patch() {
         if (params.isEmpty()) {
