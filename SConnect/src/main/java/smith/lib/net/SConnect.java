@@ -42,6 +42,7 @@ public class SConnect {
 	private int paramsType = PARAM;
     private String url;
     private String tag = SCONNECT_TAG;
+    private String mediaType;
 
     /**
      * Create new Instance of SConnect.
@@ -99,6 +100,11 @@ public class SConnect {
      */
     public SConnect addParam(String key, Object value) {
         this.params.put(key, value);
+        return this;
+    }
+    
+    public SConnect addMediaType(String type) {
+        this.mediaType = type;
         return this;
     }
 
@@ -217,6 +223,10 @@ public class SConnect {
 	protected int getParamsType() {
 		return paramsType;
 	}
+    
+    protected String getMediaType() {
+    	return mediaType;
+    }
     
     protected Activity getActivity() {
         return (Activity) context;
