@@ -1,54 +1,88 @@
 # SConnect
 
+![Builds and tests](https://github.com/smith8h/SConnect/actions/workflows/build.yml/badge.svg)
+[![JitPack release](https://jitpack.io/v/smith8h/SConnect.svg)](https://jitpack.io/#smith8h/SConnect)
+![Latest release](https://img.shields.io/github/v/release/smith8h/SConnect?include_prereleases&amp;label=latest%20release)
+![stable version](https://img.shields.io/badge/stable_version-v4.1-blue)
 ![stability-stable](https://img.shields.io/badge/stability-stable-green.svg)
-![minimumSDK](https://img.shields.io/badge/minSDK-21-f39f37)
-![stable version](https://img.shields.io/badge/stable_version-v3.0-blue)
+![minimumSDK](https://img.shields.io/badge/minSDK-24-f39f37)
 ![Repository size](https://img.shields.io/github/repo-size/smith8h/SConnect)
-<br/>
+
+</br>
 
 **(S-Connect)** A Http client based library that use *OkHttp3* for simply making requests to URLs and APIs, and get a response as Json or plain text.
 
-<br/>
+</br>
 
-**Content**
+## Content
+
 - [**Setup**](#setup)
-- [**Documentations**](#documentations)
+- [**Changelog**](https://github.com/smith8h/SConnect/blob/main/CHANGELOG.md)
+- [**Documentation**](#documentation)
+- [**Example Code**](#example-code)
 - [**Donations :heart:**](#donations)
-<br/>
 
-# Setup
-> **Step 1.** Add the JitPack repository to your build file.</br>
-Add it in your root build.gradle at the end of repositories:
+</br>
+
+## Setup
+
+> **Step 1.**
+> Add the JitPack repository to your build file.</br>
+> Add it in your root build.gradle at the end of repositories:
+
 ```gradle
 allprojects {
     repositories {
-	...
-	maven { url 'https://jitpack.io' }
+        ...
+     maven { url 'https://jitpack.io' }
+        ...
     }
 }
 ```
+
 > **Step 2.** Add the dependency:
+
 ```gradle
 dependencies {
-    implementation 'com.github.smith8h:SConnect:v3.1'
+    ...
+    implementation 'com.github.smith8h:SConnect:v4.1'
+    ...
 }
 ```
 
-<br/>
+> [!WARNING]
+> Add these dependencies in case you facing some compile or runtime errors:
 
-# Documentation
-To create a connect first pass a context using `with()` method:
+```gradle
+dependencies {
+    ...
+    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.11'
+    implementation 'com.squareup.okio:okio:3.5.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    ...
+}
+```
+
+</br>
+
+## Documentation
+
+To create a connection first pass a context using `with()` method:
+
 ```java
     SConnect.with(this)
 ```
+
 Then pass the callback interface to deal with the response using `callback()` method:
+
 ```java
-    .callback(new SConnectCallBack() {
+    SConnect.with(context).callback(new SConnectCallBack() {
         @Override
         public void onFailure(SResponse response, String tag) {}
             
         @Override
-        public void onSuccess(SResponse response, String tag, HashMap<String, Object> responseHeaders) {
+        public void onSuccess(SResponse response, String tag, Map<String, Object> responseHeaders) {
+            // use response, tag, responseHeaders
             if (response.isJSON() && response.isMap()) {
                 Toast.makeText(context, response.getMap().getString("key"), Toast.LENGTH_SHORT).show();
             } else {
@@ -57,51 +91,84 @@ Then pass the callback interface to deal with the response using `callback()` me
         }
     })
 ```
+
 After that, if you need to add headers, params to your connection. add them using `headers()` and `params()` methods:
+
 ```java
-    .headers(Map<String, String>)
-    .params(Map<String, String>, SConnect.PARAM)
-    // or SConnect.BODY
+    .addHeaders(Map<String, Object>)
+    // you can also use add header one by one.
+    .addHeader("key", value)
+
+
+    .addParams(Map<String, Object>)
+    // you can  also use add header one by one.
+    .addParam("key", value)
+        
+    // and then set the param type.
+    .paramsType(SConnect.PARAM) // or BODY
 ```
+
 then pass the url using `url()` method:
+
 ```java
     .url("url")
 ```
-finaly, use any of `get()`, `post()`, `put()` or `delete()` methods corrisponding to your connection:
-> you can pass a tag to recognize multiple connections
+
+**Optional method |** use `tag()` to set a tag to every connection (useful when you do a multiple connections at same time and need to recognize them).
+
 ```java
-    .get() // post() | put() | delete()
-    // or get(tag) | post(tag) | put(tag) | delete(tag)
+    .tag("someTag")
 ```
 
-**Final codes**:
+finaly, use any of `get()`, `post()`, `put()`, `delete()`, `patch()`, `options()` or `head()` methods corresponding to your connection:
+
+```java
+    .get()
+    // or: post() | put() | delete() | patch() | options() | head()
+```
+
+## Example Code
+
 • connections doesn't need params/headers:
+
 ```java
     SConnect.with(this)
             .callback(callback)
-            .url(url)
-            .get(); // post | put | delete
-            // also pass tag if you need to recognize multiple requesrs which one is giving response
-```
-• connections need params/headers:
-```java
-    SConnect.with(this)
-            .callback(callback)
-            .params(params, SConnect.PARAM) // BODY
-            .headers(headers)
             .url(url)
             .get(); // post | put | delete
             // also pass tag if you need to recognize multiple requesrs which one is giving response
 ```
 
-<br/>
+• connections need params/headers:
+
+```java
+
+    Map<String, Object> params = new HashMap<>();
+    params.put("key", value);
+    ...
+    Map<String, Object> headers = new HashMap<>();
+    params.put("key", value);
+    ...
+            
+    SConnect.with(this)
+            .callback(callback)
+            .addParams(params)
+            .paramsType(SConnect.PARAM) // or BODY
+            .addHeaders(headers)
+            .url("http://example.url.com")
+            .tag("sample")
+            .get(); // post | put | delete...
+```
+
+</br>
 
 Dealing with **Json response* using `SResponse` class
 > if response is plain/text or HTML (when requesting websites) simply use `response.toString()` method.
+
 ```java
     // get/check response as json (if get a api json response)
     boolean isJSON = response.isJSON();
-    // check if response json is Object
+    // check if response json is Map Object
     boolean isMap = response.isMap();
     // else if it's Array
     boolean isArray = response.isArray();
@@ -110,10 +177,11 @@ Dealing with **Json response* using `SResponse` class
     // getting response if it is plain text or json in general
     String text = response.toString();
     
-    // get response as object
+    
+    // get response as map object
     SResponse.Map object = response.getMap();
     // now you can access all values in that object using
-    // return Object
+    // return Object of any value
     Object o = object.get("key");
     // return int
     int i = object.getInt("key");
@@ -134,6 +202,10 @@ Dealing with **Json response* using `SResponse` class
     boolean hasKey = object.hasKey("key");
     // has value? (accepts anything)
     boolean hasValue = object.hasValue(Object);
+    // iterate through keys & values
+    object.forEach((key, value) -> {
+        // use key || value
+    });
     // size
     int size = object.size();
     // is empty?
@@ -149,9 +221,9 @@ Dealing with **Json response* using `SResponse` class
     // this if the response body is array
     SResponse.Array array = response.getArray();
     // and this if response body is object ↑ has an array as value inside it
-    SResponse.Array array = object.getArray();
+    SResponse.Array array = object.getArray("key");
     // array class has same methods like map class
-    // get at index
+    // get at index as object of any value
     Object o = array.get(0);
     // get string 
     String s = array.getString(0);
@@ -164,9 +236,13 @@ Dealing with **Json response* using `SResponse` class
     // get Map object like above if map object nested inside list
     SResponse.Map m = array.getMap(0);
     // same if it has array inside array
-    SResponse.Array a = array.getArray();
+    SResponse.Array a = array.getArray(0);
     // contains something?
     boolean contains = array.contains(Object);
+    // iterate through items
+    array.forEach(item -> {
+        // use item
+    });
     // size
     int size = array.size();
     // is empty
@@ -178,22 +254,30 @@ Dealing with **Json response* using `SResponse` class
     
 ```
 
-<br/>
+</br>
 
-# Donations
+## Donations
+
 > If you would like to support this project's further development, the creator of this projects or the continuous maintenance of the project **feel free to donate**.
 Your donation is highly appreciated. Thank you!
-<br/>
+
+</br>
 
 You can **choose what you want to donate**, all donations are awesome!</br>
-<br/>
+
+</br>
 
 [![PayPal](https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://www.paypal.me/husseinshakir)
 [![Buy me a coffee](https://img.shields.io/badge/Buy_Me_A_Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/HusseinShakir)
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/husseinsmith)
-<br/>
+
+</br>
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/smith8h/smith8h/main/20221103_150053.png" style="width: 38%;"/>
-  <br><b>With :heart:</b>
+  </br>
+  <b>
+    With :heart:
+  </b>
 </p>
+</br>

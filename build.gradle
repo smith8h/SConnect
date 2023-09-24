@@ -1,25 +1,26 @@
-buildscript { 
+buildscript {
+
     repositories {
         mavenCentral()
         gradlePluginPortal()
         google()
-        jcenter()
-        maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.1.1'
     }
 }
 
 plugins {
-    id 'com.android.application' version '7.4.1' apply false
-    id 'com.android.library' version '7.4.1' apply false
+    id 'com.android.application' version '8.0.1' apply false
+    id 'com.android.library' version '8.0.1' apply false
 }
 
 allprojects {
     repositories {
-    	mavenCentral()
+        mavenCentral()
         google()
-        jcenter()
         maven { url 'https://jitpack.io' }
-        maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
     }
 }
 
