@@ -26,15 +26,17 @@ public class SConnect {
     private static final String HEAD = "HEAD";
 
     /**
-     * Default SConnect tag used in connections doesn't have tag to identify.
+     * Default SConnect tag used in connections that does not have a tag to distinguish them.
      */
     public static final String SCONNECT_TAG = "DefaultSConnectTag";
     /**
-     * The type of request param, used to set params type for {@link SConnect#addParams(Map)} using {@link SConnect#paramsType(int)}.
+     * The type of request param, used to set params type for {@link SConnect#addParams(Map)} using
+     * {@link SConnect#paramsType(int)}.
      */
     public static final int PARAM = 0;
     /**
-     * The type of request body, used to set body type for {@link SConnect#addParams(Map)} using {@link SConnect#paramsType(int)}.
+     * The type of request body, used to set body type for {@link SConnect#addParams(Map)} using
+     * {@link SConnect#paramsType(int)}.
      */
     public static final int BODY = 1;
     
@@ -106,7 +108,13 @@ public class SConnect {
         this.params.put(key, value);
         return this;
     }
-    
+
+    /**
+     * Set the media type if required by some APIs.
+     * @param type the required media type as needed as json type, text, images or else! <br/>
+     *             <b>Example Type:</b> a json encoded with url encoding media type
+     *             {@code "application/x-www-form-urlencoded"}
+     */
     public SConnect addMediaType(String type) {
         this.mediaType = type;
         return this;
@@ -140,7 +148,8 @@ public class SConnect {
     }
 
     /**
-     * Create a connection with GET method, use it to request a representation of the specified resource.
+     * Create a connection with GET method, use it to request a representation of the specified
+     * resource.
      * <p>
      *     Requests using GET should only be used to request data (they shouldn't include data).
      * </p>
@@ -183,7 +192,10 @@ public class SConnect {
     public void patch() {
         if (params.isEmpty()) {
             if (callback != null)
-                callback.onFailure(new SResponse("PATCH request method does not contain any request body params!"), tag);
+                callback.onFailure(
+                        new SResponse("PATCH request method does not contain any request body or params!")
+                        , tag
+                );
         }
         else connect(PATCH);
     }
@@ -200,16 +212,21 @@ public class SConnect {
     public void options() {
         if (headers.isEmpty()) {
             if (callback != null)
-                callback.onFailure(new SResponse("OPTIONS request method does not contain any request headers!"), tag);
+                callback.onFailure(
+                        new SResponse("OPTIONS request method does not contain any request headers!")
+                        , tag
+                );
         }
         else connect(OPTIONS);
     }
 
     /**
-     * Create a connection with OPTIONS method, use it to ask for a response identical to that of a GET request,
+     * Create a connection with OPTIONS method, use it to ask for a response identical to that of a
+     * GET request,
      * but without the response body.
      * <p>
-     *     This is useful for retrieving meta-information written in response headers, without having to transport the entire content.
+     *     This is useful for retrieving meta-information written in response headers,
+     *     without having to transport the entire content.
      * </p>
      */
     public void head() {
@@ -246,8 +263,16 @@ public class SConnect {
      * @return true if the device is connected to the internet.
      */
 	public static boolean isDeviceConnected(@NonNull Context context) {
-		var connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        var capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
-        return capabilities != null && (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI));
+		var connectivityManager = (ConnectivityManager) context.getSystemService(
+                Context.CONNECTIVITY_SERVICE
+        );
+        var capabilities = connectivityManager.getNetworkCapabilities(
+                connectivityManager.getActiveNetwork()
+        );
+        return capabilities != null &&
+                (capabilities.hasTransport(
+                        NetworkCapabilities.TRANSPORT_CELLULAR) ||
+                        capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+                );
     }
 }
