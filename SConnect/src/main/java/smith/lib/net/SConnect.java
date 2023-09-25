@@ -131,7 +131,7 @@ public class SConnect {
      *             <b>Example Type:</b> a json encoded with url encoding media type
      *             {@code "application/x-www-form-urlencoded"}
      */
-    public SConnect addMediaType(String type) {
+    public SConnect mediaType(String type) {
         this.mediaType = type;
         return this;
     }
