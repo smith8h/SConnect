@@ -17,6 +17,7 @@
 package smith.lib.net;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 
 import androidx.annotation.NonNull;
 
@@ -131,12 +132,12 @@ class SConnectController {
 
             getClient().newCall(req).enqueue(new Callback() {
                 @Override public void onFailure(@NonNull Call call, @NonNull final IOException e) {
-                    sconnect.getActivity().runOnUiThread(() -> callback.onFailure(new SResponse(e.getMessage()), tag));
+                    ((Activity)(sconnect.getContext())).runOnUiThread(() -> callback.onFailure(new SResponse(e.getMessage()), tag));
                 }
 
                 @Override public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
                     final var responseBody = response.body().string().trim();
-                    sconnect.getActivity().runOnUiThread(() -> {
+                    ((Activity)(sconnect.getContext())).runOnUiThread(() -> {
                         var headers = response.headers();
                         var map = new HashMap<String, Object>();
                         for (var key : headers.names()) {

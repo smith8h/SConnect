@@ -265,8 +265,8 @@ public class SConnect {
     	return mediaType;
     }
     
-    protected Activity getActivity() {
-        return (Activity) context;
+    protected Context getContext() {
+        return context;
     }
     
     private void connect(String method) {
