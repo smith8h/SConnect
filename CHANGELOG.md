@@ -1,7 +1,15 @@
 
 # CHANGELOG
 
-## v4.1 Latest
+## v5.0 Latest
+
+- New `mediaType` method to set the media type for connections that require a media type.
+- Fix crashes and lagging when used in `Service` classes.
+- Update (c) copyrights.
+
+**Full Changelog**: [v4.1...v5.0](https://github.com/smith8h/SConnect/compare/v4.1...v5.0)
+
+## v4.1
 
 - New `addParam` method to add param separately.
 - New `paramsType` method to set params type as body or params.

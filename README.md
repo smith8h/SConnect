@@ -10,7 +10,7 @@
 
 </br>
 
-**(S-Connect)** A Http client based library that use *OkHttp3* for simply making requests to URLs and APIs, and get a response as Json or plain text.
+**(SConnect)** A Http client based library that use *OkHttp3* for simply making requests to URLs and APIs, and get a response as Json or plain text.
 
 </br>
 
@@ -34,7 +34,7 @@
 allprojects {
     repositories {
         ...
-     maven { url 'https://jitpack.io' }
+        maven { url 'https://jitpack.io' }
         ...
     }
 }
@@ -45,7 +45,7 @@ allprojects {
 ```gradle
 dependencies {
     ...
-    implementation 'com.github.smith8h:SConnect:v4.1'
+    implementation 'com.github.smith8h:SConnect:v5.0'
     ...
 }
 ```
@@ -70,7 +70,7 @@ dependencies {
 To create a connection first pass a context using `with()` method:
 
 ```java
-    SConnect.with(this)
+    SConnect.with(context)
 ```
 
 Then pass the callback interface to deal with the response using `callback()` method:
@@ -92,20 +92,22 @@ Then pass the callback interface to deal with the response using `callback()` me
     })
 ```
 
-After that, if you need to add headers, params to your connection. add them using `headers()` and `params()` methods:
+After that, if you need to add headers, params to your connection. add them using methods:
 
 ```java
     .addHeaders(Map<String, Object>)
-    // you can also use add header one by one.
-    .addHeader("key", value)
+    .addHeader("key", value) // you can also use add header one by one.
 
 
     .addParams(Map<String, Object>)
-    // you can  also use add header one by one.
-    .addParam("key", value)
+    .addParam("key", value) // you can  also use add header one by one.
         
     // and then set the param type.
     .paramsType(SConnect.PARAM) // or BODY
+
+
+    // if required for some connections
+    .mediaType("a string represent the media type applied to a connection")
 ```
 
 then pass the url using `url()` method:
@@ -155,6 +157,7 @@ finaly, use any of `get()`, `post()`, `put()`, `delete()`, `patch()`, `options()
             .addParams(params)
             .paramsType(SConnect.PARAM) // or BODY
             .addHeaders(headers)
+            .mediaType("json/application;Charset:UTF-8")
             .url("http://example.url.com")
             .tag("sample")
             .get(); // post | put | delete...
