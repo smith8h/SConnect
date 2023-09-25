@@ -3,7 +3,7 @@
 ![Builds and tests](https://github.com/smith8h/SConnect/actions/workflows/build.yml/badge.svg)
 [![JitPack release](https://jitpack.io/v/smith8h/SConnect.svg)](https://jitpack.io/#smith8h/SConnect)
 ![Latest release](https://img.shields.io/github/v/release/smith8h/SConnect?include_prereleases&amp;label=latest%20release)
-![stable version](https://img.shields.io/badge/stable_version-v4.1-blue)
+![stable version](https://img.shields.io/badge/stable_version-v5.0-blue)
 ![stability-stable](https://img.shields.io/badge/stability-stable-green.svg)
 ![minimumSDK](https://img.shields.io/badge/minSDK-24-f39f37)
 ![Repository size](https://img.shields.io/github/repo-size/smith8h/SConnect)
@@ -259,6 +259,17 @@ Dealing with **Json response* using `SResponse` class
 
 </br>
 
+## Contributors
+
+<a href="https://github.com/smith8h">
+  <img src="https://contrib.rocks/image?repo=smith8h/smith8h" />
+</a>
+<a href="https://github.com/1on7">
+  <img src="https://contrib.rocks/image?repo=1on7/pubgh" />
+</a>
+
+<br/>
+
 ## Donations
 
 > If you would like to support this project's further development, the creator of this projects or the continuous maintenance of the project **feel free to donate**.
@@ -278,7 +289,7 @@ You can **choose what you want to donate**, all donations are awesome!</br>
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/smith8h/smith8h/main/20221103_150053.png" style="width: 38%;"/>
-  </br>
+  <br/>
   <b>
     With :heart:
   </b>
