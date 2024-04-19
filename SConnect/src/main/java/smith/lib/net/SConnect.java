@@ -30,7 +30,6 @@ import java.util.Map;
  * The SConnect class helps you create connections
  * to APIs and websites easily with simple and fast codes.
  */
-@SuppressWarnings({"unused"})
 public class SConnect {
     
 	private static final String GET = "GET";
@@ -55,10 +54,9 @@ public class SConnect {
      * {@link SConnect#paramsType(int)}.
      */
     public static final int BODY = 1;
-    
+
     private Map<String, Object> params = new HashMap<>();
 	private Map<String, Object> headers = new HashMap<>();
-	
     private Context context;
     private SConnectCallBack callback;
 	private int paramsType = PARAM;
@@ -66,17 +64,28 @@ public class SConnect {
     private String tag = SCONNECT_TAG;
     private String mediaType;
 
+    protected int socketTimeout = 15000, readTimeout = 25000;
+
     /**
      * Create new Instance of SConnect.
      * @param context Current Activity or FragmentActivity.
      * @return A new Instance of SConnect.
      */
 	@NonNull
-    public static SConnect init(Context context) {
+    public static SConnect init(@NonNull Context context) {
         SConnect sc = new SConnect();
         sc.context = context;
         return sc;
 	}
+
+    @NonNull
+    public static SConnect init(@NonNull Context context, int socketTimeout, int readTimeout) {
+        SConnect sc = new SConnect();
+        sc.context = context;
+        sc.socketTimeout = socketTimeout;
+        sc.readTimeout = readTimeout;
+        return sc;
+    }
 
     /**
      * Set the SConnect CallBack Interface.
@@ -268,7 +277,15 @@ public class SConnect {
     protected Context getContext() {
         return context;
     }
-    
+
+    protected int getSocketTimeout() {
+        return socketTimeout;
+    }
+
+    protected int getReadTimeout() {
+        return readTimeout;
+    }
+
     private void connect(String method) {
 		SConnectController.getInstance().connect(this, method, url, tag, callback);
 	}
