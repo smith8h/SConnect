@@ -16,7 +16,6 @@
 
 package smith.lib.net;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 
 import androidx.annotation.NonNull;
@@ -48,9 +47,6 @@ import okhttp3.Response;
 @SuppressWarnings({"unused", "all"})
 class SConnectController {
 
-    private static final int SOCKET_TIMEOUT = 15000;
-    private static final int READ_TIMEOUT = 25000;
-
     protected OkHttpClient client;
     private static SConnectController mInstance;
 
@@ -59,12 +55,11 @@ class SConnectController {
         return mInstance;
     }
 
-    @SuppressLint({"CustomX509TrustManager", "TrustAllX509TrustManager", "BadHostnameVerifier"})
-    private OkHttpClient getClient() {
+    private OkHttpClient getClient(SConnect sconnect, SConnectCallBack callback, String tag) {
         if (client == null) {
             var builder = new OkHttpClient.Builder();
             try {
-                final var trustAllCerts = new TrustManager[]{
+                final var trustAllCerts = new TrustManager[] {
                         new X509TrustManager() {
                             @Override public void checkClientTrusted(X509Certificate[] chain, String authType) {}
 
@@ -77,11 +72,13 @@ class SConnectController {
                 sslContext.init(null, trustAllCerts, new SecureRandom());
                 final var sslSocketFactory = sslContext.getSocketFactory();
                 builder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustAllCerts[0]);
-                builder.connectTimeout(SOCKET_TIMEOUT, TimeUnit.MILLISECONDS);
-                builder.readTimeout(READ_TIMEOUT, TimeUnit.MILLISECONDS);
-                builder.writeTimeout(READ_TIMEOUT, TimeUnit.MILLISECONDS);
+                builder.connectTimeout(sconnect.getSocketTimeout(), TimeUnit.MILLISECONDS);
+                builder.readTimeout(sconnect.getReadTimeout(), TimeUnit.MILLISECONDS);
+                builder.writeTimeout(sconnect.getReadTimeout(), TimeUnit.MILLISECONDS);
                 builder.hostnameVerifier((hostname, session) -> true);
-            } catch (Exception ignored) {}
+            } catch (Exception e) {
+                callback.onFailure(new SResponse(e.getMessage()), tag);
+            }
             client = builder.build();
         }
         return client;
@@ -91,7 +88,7 @@ class SConnectController {
         var reqBuilder = new Request.Builder();
         var headerBuilder = new Headers.Builder();
 
-        if (sconnect.getHeaders().size() > 0)
+        if (!sconnect.getHeaders().isEmpty())
             sconnect.getHeaders().forEach((key, value) -> headerBuilder.add(key, String.valueOf(value)));
 
         try {
@@ -105,32 +102,32 @@ class SConnectController {
                         return;
                     }
 
-                    if (sconnect.getParams().size() > 0)
+                    if (!sconnect.getParams().isEmpty())
                         sconnect.getParams().forEach((key, value) -> httpBuilder.addQueryParameter(key, String.valueOf(value)));
 
                     reqBuilder.url(httpBuilder.build()).headers(headerBuilder.build()).get();
                 } else {
                     var formBuilder = new FormBody.Builder();
-                    if (sconnect.getParams().size() > 0)
+                    if (!sconnect.getParams().isEmpty())
                         sconnect.getParams().forEach((key, value) -> formBuilder.add(key, String.valueOf(value)));
                     var reqBody = formBuilder.build();
                     reqBuilder.url(url).headers(headerBuilder.build()).method(method, reqBody);
                 }
             } else {
-                if(sconnect.getMediaType() == "") {
-                	var reqBody = RequestBody.create("application/json; charset=utf-8;",MediaType.parse(new Gson().toJson(sconnect.getParams())));
-                        if (method.equals("GET")) reqBuilder.url(url).headers(headerBuilder.build()).get();
-                        else reqBuilder.url(url).headers(headerBuilder.build()).method(method, reqBody);
+                if(sconnect.getMediaType().isEmpty()) {
+                	var reqBody = RequestBody.create("application/json; charset=utf-8;", MediaType.parse(new Gson().toJson(sconnect.getParams())));
+                    if (method.equals("GET")) reqBuilder.url(url).headers(headerBuilder.build()).get();
+                    else reqBuilder.url(url).headers(headerBuilder.build()).method(method, reqBody);
                 } else {
                     var reqBody = RequestBody.create(MediaType.parse(sconnect.getMediaType()), sconnect.getParams().toString().replace("{", "").replace("}", ""));
-                        if (method.equals("GET")) reqBuilder.url(url).headers(headerBuilder.build()).get();
-                        else reqBuilder.url(url).headers(headerBuilder.build()).method(method, reqBody);
+                    if (method.equals("GET")) reqBuilder.url(url).headers(headerBuilder.build()).get();
+                    else reqBuilder.url(url).headers(headerBuilder.build()).method(method, reqBody);
                 }
             }
 
             var req = reqBuilder.build();
 
-            getClient().newCall(req).enqueue(new Callback() {
+            getClient(sconnect, callback, tag).newCall(req).enqueue(new Callback() {
                 @Override public void onFailure(@NonNull Call call, @NonNull final IOException e) {
                     ((Activity)(sconnect.getContext())).runOnUiThread(() -> callback.onFailure(new SResponse(e.getMessage()), tag));
                 }

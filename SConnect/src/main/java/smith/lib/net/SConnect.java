@@ -63,8 +63,7 @@ public class SConnect {
     private String url;
     private String tag = SCONNECT_TAG;
     private String mediaType;
-
-    protected int socketTimeout = 15000, readTimeout = 25000;
+    private int socketTimeout = 15000, readTimeout = 25000;
 
     /**
      * Create new Instance of SConnect.
@@ -78,6 +77,13 @@ public class SConnect {
         return sc;
 	}
 
+    /**
+     * Create new Instance of SConnect.
+     * @param context Current Activity or FragmentActivity.
+     * @param socketTimeout socket connection timeout in ms.
+     * @param readTimeout read and write connection timeout in ms.
+     * @return A new Instance of SConnect.
+     */
     @NonNull
     public static SConnect init(@NonNull Context context, int socketTimeout, int readTimeout) {
         SConnect sc = new SConnect();
