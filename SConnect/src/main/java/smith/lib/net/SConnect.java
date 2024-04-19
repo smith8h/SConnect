@@ -91,7 +91,7 @@ public class SConnect {
      * Set the headers to your connection.
      * @param headers A Map of Stings as Key, and Objects as Value
      */
-    public SConnect addHeaders(Map<String, Object> headers) {
+    public SConnect headers(Map<String, Object> headers) {
 		this.headers = headers;
         return this;
 	}
