@@ -46,12 +46,12 @@ public class SConnect {
      */
     public static final String SCONNECT_TAG = "DefaultSConnectTag";
     /**
-     * The type of request param, used to set params type for {@link SConnect#addParams(Map)} using
+     * The type of request param, used to set params type for {@link SConnect#params(Map)} using
      * {@link SConnect#paramsType(int)}.
      */
     public static final int PARAM = 0;
     /**
-     * The type of request body, used to set body type for {@link SConnect#addParams(Map)} using
+     * The type of request body, used to set body type for {@link SConnect#params(Map)} using
      * {@link SConnect#paramsType(int)}.
      */
     public static final int BODY = 1;
@@ -203,7 +203,7 @@ public class SConnect {
 
     /**
      * Create a connection with PATCH method, use it to modify the values of the resource properties.
-     * Requires a request {@link SConnect#BODY}, roll back to {@link SConnect#addParams(Map)}.
+     * Requires a request {@link SConnect#BODY}, roll back to {@link SConnect#params(Map)}.
      */
     public void patch() {
         if (params.isEmpty()) {
@@ -223,7 +223,7 @@ public class SConnect {
      *     The response may include an Allow header indicating allowed HTTP methods on the resource,
      *     or various Cross Origin Resource Sharing headers.
      * </p>
-     * Requires to set a headers to the request, roll back to {@link SConnect#addHeaders(Map)}.
+     * Requires to set a headers to the request, roll back to {@link SConnect#headers(Map)}.
      */
     public void options() {
         if (headers.isEmpty()) {

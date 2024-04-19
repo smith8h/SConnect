@@ -78,9 +78,9 @@ public class MainActivity extends AppCompatActivity {
                     }) // required to get responses.
                     .url(url) // required.
                     .tag(tag) // optional.
-                    .addParams(new HashMap<>()) // optional, but required for some methods.
+                    .params(new HashMap<>()) // optional, but required for some methods.
                     .paramsType(SConnect.BODY) // optional, but required for some methods.
-                    .addHeaders(new HashMap<>()) // optional, but required for some methods.
+                    .headers(new HashMap<>()) // optional, but required for some methods.
                     .get(); // post, delete, put, head, options and patch.
         }
     }
