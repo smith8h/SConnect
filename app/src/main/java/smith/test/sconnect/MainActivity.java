@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         String url = "https://smithdev.t.me"; // required.
         
         if (SConnect.isDeviceConnected(this)) { // check internet availability.
-            SConnect.with(this) // passing current context.
+            SConnect.init(this) // passing current context.
                     .callback(new SConnectCallBack() {
                         @Override
                         public void onSuccess(SResponse response, @NonNull String tag, Map<String, Object> responseHeaders) {

@@ -72,7 +72,7 @@ public class SConnect {
      * @return A new Instance of SConnect.
      */
 	@NonNull
-    public static SConnect with(Context context) {
+    public static SConnect init(Context context) {
         SConnect sc = new SConnect();
         sc.context = context;
         return sc;
