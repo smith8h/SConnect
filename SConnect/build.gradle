@@ -5,13 +5,12 @@ plugins {
 
 android {
     namespace 'smith.lib.net'
-
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         minSdk 24
-        versionCode 5
-        versionName '4.1'
+        versionCode 6
+        versionName '5.0'
         multiDexEnabled true
     }
 
