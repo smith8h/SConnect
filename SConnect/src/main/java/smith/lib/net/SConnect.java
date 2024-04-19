@@ -110,7 +110,7 @@ public class SConnect {
      * Set the request params or body to your connection.
      * @param params A Map of Strings as Key, and Objects as Value.
      */
-	public SConnect addParams(Map<String, Object> params) {
+	public SConnect params(Map<String, Object> params) {
 		this.params = params;
         return this;
 	}
