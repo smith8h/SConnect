@@ -294,7 +294,7 @@ public class SConnect {
     }
 
     private void connect(String method) {
-		SConnectController.getInstance().connect(this, method, url, tag, callback);
+		SConnectController.instance().connect(this, method, url, tag, callback);
 	}
 
     /**

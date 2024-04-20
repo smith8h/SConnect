@@ -16,16 +16,24 @@
 
 package smith.lib.net;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 
+import org.jetbrains.annotations.Contract;
+
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -39,49 +47,19 @@ import okhttp3.FormBody;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-@SuppressWarnings({"unused", "all"})
+@SuppressWarnings({"unused", "deprecation", "rawtypes"})
 class SConnectController {
 
-    protected OkHttpClient client;
-    private static SConnectController mInstance;
-
-    public static synchronized SConnectController getInstance() {
-        if (mInstance == null) mInstance = new SConnectController();
-        return mInstance;
-    }
-
-    private OkHttpClient getClient(SConnect sconnect, SConnectCallBack callback, String tag) {
-        if (client == null) {
-            var builder = new OkHttpClient.Builder();
-            try {
-                final var trustAllCerts = new TrustManager[] {
-                        new X509TrustManager() {
-                            @Override public void checkClientTrusted(X509Certificate[] chain, String authType) {}
-
-                            @Override public void checkServerTrusted(X509Certificate[] chain, String authType) {}
-
-                            @Override public X509Certificate[] getAcceptedIssuers() {return new X509Certificate[]{};}
-                        }
-                };
-                final var sslContext = SSLContext.getInstance("TLS");
-                sslContext.init(null, trustAllCerts, new SecureRandom());
-                final var sslSocketFactory = sslContext.getSocketFactory();
-                builder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustAllCerts[0]);
-                builder.connectTimeout(sconnect.getSocketTimeout(), TimeUnit.MILLISECONDS);
-                builder.readTimeout(sconnect.getReadTimeout(), TimeUnit.MILLISECONDS);
-                builder.writeTimeout(sconnect.getReadTimeout(), TimeUnit.MILLISECONDS);
-                builder.hostnameVerifier((hostname, session) -> true);
-            } catch (Exception e) {
-                callback.onFailure(new SResponse(e.getMessage()), tag);
-            }
-            client = builder.build();
-        }
-        return client;
+    @NonNull
+    @Contract(" -> new")
+    public static SConnectController instance() {
+        return new SConnectController();
     }
 
     public void connect(@NonNull final SConnect sconnect, String method, String url, final String tag, final SConnectCallBack callback) {
@@ -114,27 +92,62 @@ class SConnectController {
                     reqBuilder.url(url).headers(headerBuilder.build()).method(method, reqBody);
                 }
             } else {
-                if(sconnect.getContentType().isEmpty()) {
-                	var reqBody = RequestBody.create("application/json; charset=utf-8;", MediaType.parse(new Gson().toJson(sconnect.getParams())));
-                    if (method.equals("GET")) reqBuilder.url(url).headers(headerBuilder.build()).get();
-                    else reqBuilder.url(url).headers(headerBuilder.build()).method(method, reqBody);
+                RequestBody reqBody;
+                if (sconnect.getContentType().isEmpty()) {
+                    reqBody = RequestBody.create("application/json; charset=utf-8;", MediaType.parse(new Gson().toJson(sconnect.getParams())));
                 } else {
-                    var reqBody = RequestBody.create(MediaType.parse(sconnect.getContentType()), sconnect.getParams().toString().replace("{", "").replace("}", ""));
-                    if (method.equals("GET")) reqBuilder.url(url).headers(headerBuilder.build()).get();
-                    else reqBuilder.url(url).headers(headerBuilder.build()).method(method, reqBody);
+                    reqBody = buildRequestBodyMultipart(sconnect.getParams());
                 }
+                if (method.equals("GET"))
+                    reqBuilder.url(url).headers(headerBuilder.build()).get();
+                else reqBuilder.url(url).headers(headerBuilder.build()).method(method, reqBody);
             }
 
             var req = reqBuilder.build();
 
-            getClient(sconnect, callback, tag).newCall(req).enqueue(new Callback() {
-                @Override public void onFailure(@NonNull Call call, @NonNull final IOException e) {
-                    ((Activity)(sconnect.getContext())).runOnUiThread(() -> callback.onFailure(new SResponse(e.getMessage()), tag));
+            OkHttpClient.Builder builder = new OkHttpClient.Builder();
+            try {
+                @SuppressLint("CustomX509TrustManager") final var trustAllCerts = new TrustManager[]{
+                        new X509TrustManager() {
+                            @SuppressLint("TrustAllX509TrustManager")
+                            @Override
+                            public void checkClientTrusted(X509Certificate[] chain, String authType) {
+                            }
+
+                            @SuppressLint("TrustAllX509TrustManager")
+                            @Override
+                            public void checkServerTrusted(X509Certificate[] chain, String authType) {
+                            }
+
+                            @Override
+                            public X509Certificate[] getAcceptedIssuers() {
+                                return new X509Certificate[]{};
+                            }
+                        }
+                };
+                final var sslContext = SSLContext.getInstance("TLS");
+                sslContext.init(null, trustAllCerts, new SecureRandom());
+                final var sslSocketFactory = sslContext.getSocketFactory();
+                builder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustAllCerts[0]);
+                builder.connectTimeout(sconnect.getSocketTimeout(), TimeUnit.MILLISECONDS);
+                builder.readTimeout(sconnect.getReadTimeout(), TimeUnit.MILLISECONDS);
+                builder.writeTimeout(sconnect.getReadTimeout(), TimeUnit.MILLISECONDS);
+                builder.hostnameVerifier((hostname, session) -> true);
+            } catch (Exception e) {
+                callback.onFailure(new SResponse(e.getMessage()), tag);
+            }
+
+            OkHttpClient client = builder.build();
+            client.newCall(req).enqueue(new Callback() {
+                @Override
+                public void onFailure(@NonNull Call call, @NonNull final IOException e) {
+                    ((Activity) (sconnect.getContext())).runOnUiThread(() -> callback.onFailure(new SResponse(e.getMessage()), tag));
                 }
 
-                @Override public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
                     final var responseBody = response.body().string().trim();
-                    ((Activity)(sconnect.getContext())).runOnUiThread(() -> {
+                    ((Activity) (sconnect.getContext())).runOnUiThread(() -> {
                         var headers = response.headers();
                         var map = new HashMap<String, Object>();
                         for (var key : headers.names()) {
@@ -145,6 +158,77 @@ class SConnectController {
                     });
                 }
             });
-        } catch (Exception e) {callback.onFailure(new SResponse(e.getMessage()), tag);}
+        } catch (Exception e) {
+            callback.onFailure(new SResponse(e.getMessage()), tag);
+        }
+    }
+
+    @NonNull
+    private RequestBody buildRequestBodyMultipart(@NonNull Map<String, Object> formParams) {
+        MultipartBody.Builder mpBuilder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+        for (Map.Entry<String, Object> param : formParams.entrySet()) {
+            if (param.getValue() instanceof List) {
+                for (Object value : (List) param.getValue()) {
+                    if (value instanceof File file) {
+                        Headers partHeaders = Headers.of("Content-Disposition", "form-data; name=\"" + param.getKey() + "\"; filename=\"" + file.getName() + "\"");
+                        MediaType mediaType = MediaType.parse(guessContentTypeFromFile(file));
+                        mpBuilder.addPart(partHeaders, RequestBody.create(mediaType, file));
+                    } else {
+                        Headers partHeaders = Headers.of("Content-Disposition", "form-data; name=\"" + param.getKey() + "\"");
+                        mpBuilder.addPart(partHeaders, RequestBody.create(null, parameterToString(param.getValue())));
+                    }
+                }
+            } else {
+                if (param.getValue() instanceof File file) {
+                    Headers partHeaders = Headers.of("Content-Disposition", "form-data; name=\"" + param.getKey() + "\"; filename=\"" + file.getName() + "\"");
+                    MediaType mediaType = MediaType.parse(guessContentTypeFromFile(file));
+                    mpBuilder.addPart(partHeaders, RequestBody.create(mediaType, file));
+                } else {
+                    Headers partHeaders = Headers.of("Content-Disposition", "form-data; name=\"" + param.getKey() + "\"");
+                    mpBuilder.addPart(partHeaders, RequestBody.create(null, parameterToString(param.getValue())));
+                }
+            }
+        }
+        return mpBuilder.build();
+    }
+
+    @NonNull
+    private static String parameterToString(Object value) {
+        if (value == null) {
+            return "null";
+        } else if (value instanceof String) {
+            return (String) value;
+        } else if (value instanceof Number) {
+            return value.toString();
+        } else if (value instanceof Boolean) {
+            return value.toString();
+        } else {
+            return value.toString();
+        }
+    }
+
+    @NonNull
+    private String guessContentTypeFromFile(@NonNull File file) {
+        String contentType = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            try {
+                contentType = Files.probeContentType(file.toPath());
+            } catch (Exception ignored) {}
+        }
+        if (contentType == null) {
+            String fileName = file.getName().toLowerCase();
+            if (fileName.endsWith(".txt")) {
+                contentType = "text/plain";
+            } else if (fileName.endsWith(".jpg") || fileName.endsWith(".jpeg")) {
+                contentType = "image/jpeg";
+            } else if (fileName.endsWith(".png")) {
+                contentType = "image/png";
+            } else if (fileName.endsWith(".pdf")) {
+                contentType = "application/pdf";
+            } else {
+                contentType = "application/octet-stream";
+            }
+        }
+        return contentType;
     }
 }
