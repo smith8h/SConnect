@@ -1,7 +1,21 @@
 
 # CHANGELOG
 
-## v5.0 Latest
+## v6.0 Latest
+#### What's new:
+- you can upload files now.
+- add socket and read timeout update in init method
+- return url malformed error
+
+#### Updates
+- change initializing method from "with" to "init"
+- change adding headers method from "addHeaders" to "headers"
+- change adding parameters method from "addParams" to "params"
+- rename mediaType to contentType
+
+**Full Changelog**: [v5.0...v6.0](https://github.com/smith8h/SConnect/compare/v5.0...v6.0)
+
+## v5.0
 
 - New `mediaType` method to set the media type for connections that require a media type.
 - Fix crashes and lagging when used in `Service` classes.
