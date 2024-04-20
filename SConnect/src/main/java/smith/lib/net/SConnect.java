@@ -32,8 +32,8 @@ import java.util.Map;
  */
 @SuppressWarnings("unused")
 public class SConnect {
-    
-	private static final String GET = "GET";
+
+    private static final String GET = "GET";
     private static final String POST = "POST";
     private static final String PUT = "PUT";
     private static final String DELETE = "DELETE";
@@ -57,10 +57,10 @@ public class SConnect {
     public static final int BODY = 1;
 
     private Map<String, Object> params = new HashMap<>();
-	private Map<String, Object> headers = new HashMap<>();
+    private Map<String, Object> headers = new HashMap<>();
     private Context context;
     private SConnectCallBack callback;
-	private int paramsType = PARAM;
+    private int paramsType = PARAM;
     private String url;
     private String tag = SCONNECT_TAG;
     private String contentType;
@@ -68,21 +68,23 @@ public class SConnect {
 
     /**
      * Create new Instance of SConnect.
+     *
      * @param context Current Activity or FragmentActivity.
      * @return A new Instance of SConnect.
      */
-	@NonNull
+    @NonNull
     public static SConnect init(@NonNull Context context) {
         SConnect sc = new SConnect();
         sc.context = context;
         return sc;
-	}
+    }
 
     /**
      * Create new Instance of SConnect.
-     * @param context Current Activity or FragmentActivity.
+     *
+     * @param context       Current Activity or FragmentActivity.
      * @param socketTimeout socket connection timeout in ms.
-     * @param readTimeout read and write connection timeout in ms.
+     * @param readTimeout   read and write connection timeout in ms.
      * @return A new Instance of SConnect.
      */
     @NonNull
@@ -96,6 +98,7 @@ public class SConnect {
 
     /**
      * Set the SConnect CallBack Interface.
+     *
      * @param callback A SConnectCallBack interface.
      */
     public SConnect callback(SConnectCallBack callback) {
@@ -105,16 +108,18 @@ public class SConnect {
 
     /**
      * Set the headers to your connection.
+     *
      * @param headers A Map of Stings as Key, and Objects as Value
      */
     public SConnect headers(Map<String, Object> headers) {
-		this.headers = headers;
+        this.headers = headers;
         return this;
-	}
+    }
 
     /**
      * Add header to the connection headers.
-     * @param key A String as Key.
+     *
+     * @param key   A String as Key.
      * @param value A value as any.
      */
     public SConnect addHeader(String key, Object value) {
@@ -124,16 +129,18 @@ public class SConnect {
 
     /**
      * Set the request params or body to your connection.
+     *
      * @param params A Map of Strings as Key, and Objects as Value.
      */
-	public SConnect params(Map<String, Object> params) {
-		this.params = params;
+    public SConnect params(Map<String, Object> params) {
+        this.params = params;
         return this;
-	}
+    }
 
     /**
      * Add param to the connection params.
-     * @param key A String as Key.
+     *
+     * @param key   A String as Key.
      * @param value A value as any.
      */
     public SConnect addParam(String key, Object value) {
@@ -143,6 +150,7 @@ public class SConnect {
 
     /**
      * Set the content type if required by some APIs.
+     *
      * @param type the required content type as needed as json type, text, images or else! <br/>
      *             <b>Example Type:</b> a json encoded with url encoding content type
      *             {@code "application/x-www-form-urlencoded"}
@@ -154,6 +162,7 @@ public class SConnect {
 
     /**
      * Set the type as params or body to your connection.
+     *
      * @param type the request body type, either {@link SConnect#PARAM} or {@link SConnect#BODY}
      */
     public SConnect paramsType(int type) {
@@ -163,19 +172,21 @@ public class SConnect {
 
     /**
      * Set the target URL to your connection.
+     *
      * @param url A string URL (The target URL to connect with).
      */
     public SConnect url(String url) {
-    	this.url = url;
+        this.url = url;
         return this;
     }
 
     /**
      * Set the unique tag to your connection.
+     *
      * @param tag A string tag to distinguish multiple connections in same interface.
      */
     public SConnect tag(String tag) {
-    	this.tag = tag;
+        this.tag = tag;
         return this;
     }
 
@@ -183,11 +194,11 @@ public class SConnect {
      * Create a connection with GET method, use it to request a representation of the specified
      * resource.
      * <p>
-     *     Requests using GET should only be used to request data (they shouldn't include data).
+     * Requests using GET should only be used to request data (they shouldn't include data).
      * </p>
      */
     public void get() {
-    	connect(GET);
+        connect(GET);
     }
 
     /**
@@ -195,18 +206,18 @@ public class SConnect {
      * create or rewrite a particular resource/data.
      */
     public void post() {
-    	connect(POST);
+        connect(POST);
     }
 
     /**
      * Create a connection with POST method, use it for full replacement of an OSLC resource.
      * <p>
-     *     The PUT method updates both literal properties and local resource properties,
-     *     and it deletes any local resource properties that are not included in the request.
+     * The PUT method updates both literal properties and local resource properties,
+     * and it deletes any local resource properties that are not included in the request.
      * </p>
      */
     public void put() {
-    	connect(PUT);
+        connect(PUT);
     }
 
     /**
@@ -214,7 +225,7 @@ public class SConnect {
      * the association between the target resource and its current functionality.
      */
     public void delete() {
-    	connect(DELETE);
+        connect(DELETE);
     }
 
     /**
@@ -228,16 +239,15 @@ public class SConnect {
                         new SResponse("PATCH request method does not contain any request body or params!")
                         , tag
                 );
-        }
-        else connect(PATCH);
+        } else connect(PATCH);
     }
 
     /**
      * Create a connection with OPTIONS method, use it to request information about the communication
      * options available for the target resource.
      * <p>
-     *     The response may include an Allow header indicating allowed HTTP methods on the resource,
-     *     or various Cross Origin Resource Sharing headers.
+     * The response may include an Allow header indicating allowed HTTP methods on the resource,
+     * or various Cross Origin Resource Sharing headers.
      * </p>
      * Requires to set a headers to the request, roll back to {@link SConnect#headers(Map)}.
      */
@@ -248,8 +258,7 @@ public class SConnect {
                         new SResponse("OPTIONS request method does not contain any request headers!")
                         , tag
                 );
-        }
-        else connect(OPTIONS);
+        } else connect(OPTIONS);
     }
 
     /**
@@ -257,8 +266,8 @@ public class SConnect {
      * GET request,
      * but without the response body.
      * <p>
-     *     This is useful for retrieving meta-information written in response headers,
-     *     without having to transport the entire content.
+     * This is useful for retrieving meta-information written in response headers,
+     * without having to transport the entire content.
      * </p>
      */
     public void head() {
@@ -266,21 +275,21 @@ public class SConnect {
     }
 
     protected Map<String, Object> getHeaders() {
-		return headers;
-	}
+        return headers;
+    }
 
     protected Map<String, Object> getParams() {
-		return params;
-	}
-
-	protected int getParamsType() {
-		return paramsType;
-	}
-    
-    protected String getContentType() {
-    	return contentType;
+        return params;
     }
-    
+
+    protected int getParamsType() {
+        return paramsType;
+    }
+
+    protected String getContentType() {
+        return contentType;
+    }
+
     protected Context getContext() {
         return context;
     }
@@ -294,25 +303,24 @@ public class SConnect {
     }
 
     private void connect(String method) {
-		SConnectController.instance().connect(this, method, url, tag, callback);
-	}
+        SConnectController.instance().connect(this, method, url, tag, callback);
+    }
 
     /**
      * Check internet availability on the device, useful when checking before making connections.
+     *
      * @param context current {@link Context} or {@link Activity}.
      * @return true if the device is connected to the internet.
      */
-	public static boolean isDeviceConnected(@NonNull Context context) {
-		var connectivityManager = (ConnectivityManager) context.getSystemService(
+    public static boolean isDeviceConnected(@NonNull Context context) {
+        var connectivityManager = (ConnectivityManager) context.getSystemService(
                 Context.CONNECTIVITY_SERVICE
         );
         var capabilities = connectivityManager.getNetworkCapabilities(
                 connectivityManager.getActiveNetwork()
         );
-        return capabilities != null &&
-                (capabilities.hasTransport(
-                        NetworkCapabilities.TRANSPORT_CELLULAR) ||
-                        capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
-                );
+        return capabilities != null
+                && (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+                || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI));
     }
 }
