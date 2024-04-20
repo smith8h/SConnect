@@ -30,6 +30,7 @@ import java.util.Map;
  * The SConnect class helps you create connections
  * to APIs and websites easily with simple and fast codes.
  */
+@SuppressWarnings("unused")
 public class SConnect {
     
 	private static final String GET = "GET";
@@ -62,7 +63,7 @@ public class SConnect {
 	private int paramsType = PARAM;
     private String url;
     private String tag = SCONNECT_TAG;
-    private String mediaType;
+    private String contentType;
     private int socketTimeout = 15000, readTimeout = 25000;
 
     /**
@@ -141,13 +142,13 @@ public class SConnect {
     }
 
     /**
-     * Set the media type if required by some APIs.
-     * @param type the required media type as needed as json type, text, images or else! <br/>
-     *             <b>Example Type:</b> a json encoded with url encoding media type
+     * Set the content type if required by some APIs.
+     * @param type the required content type as needed as json type, text, images or else! <br/>
+     *             <b>Example Type:</b> a json encoded with url encoding content type
      *             {@code "application/x-www-form-urlencoded"}
      */
-    public SConnect mediaType(String type) {
-        this.mediaType = type;
+    public SConnect contentType(String type) {
+        this.contentType = type;
         return this;
     }
 
@@ -276,8 +277,8 @@ public class SConnect {
 		return paramsType;
 	}
     
-    protected String getMediaType() {
-    	return mediaType;
+    protected String getContentType() {
+    	return contentType;
     }
     
     protected Context getContext() {

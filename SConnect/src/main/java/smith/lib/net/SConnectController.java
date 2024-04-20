@@ -114,12 +114,12 @@ class SConnectController {
                     reqBuilder.url(url).headers(headerBuilder.build()).method(method, reqBody);
                 }
             } else {
-                if(sconnect.getMediaType().isEmpty()) {
+                if(sconnect.getContentType().isEmpty()) {
                 	var reqBody = RequestBody.create("application/json; charset=utf-8;", MediaType.parse(new Gson().toJson(sconnect.getParams())));
                     if (method.equals("GET")) reqBuilder.url(url).headers(headerBuilder.build()).get();
                     else reqBuilder.url(url).headers(headerBuilder.build()).method(method, reqBody);
                 } else {
-                    var reqBody = RequestBody.create(MediaType.parse(sconnect.getMediaType()), sconnect.getParams().toString().replace("{", "").replace("}", ""));
+                    var reqBody = RequestBody.create(MediaType.parse(sconnect.getContentType()), sconnect.getParams().toString().replace("{", "").replace("}", ""));
                     if (method.equals("GET")) reqBuilder.url(url).headers(headerBuilder.build()).get();
                     else reqBuilder.url(url).headers(headerBuilder.build()).method(method, reqBody);
                 }
